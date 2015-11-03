@@ -17,6 +17,7 @@ print "UDP target IP:", UDP_IP
 print "UDP target port:", UDP_PORT
 print "message:", MESSAGE
 
+
 sock = socket.socket(socket.AF_INET, # Internet
                      socket.SOCK_DGRAM) # UDP
 
@@ -31,6 +32,9 @@ sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
 while True:
     data, addr = sock2.recvfrom(1024) # buffer size is 1024 bytes
     print "received message:", data
+    sock.close()
+    sock2.close()
+    break
 
 sock.close()
 sock2.close()
