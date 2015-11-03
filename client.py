@@ -11,33 +11,35 @@ import socket
 
 UDP_IP = "127.0.0.1"
 UDP_PORT = 5005
+
+# note that data sent must be a string (double check, but can't send lists, etc. so will need to do some string parsing)
 MESSAGE = "Hello, World!"
 
 print "UDP target IP:", UDP_IP
 print "UDP target port:", UDP_PORT
 print "message:", MESSAGE
 
-
-sock = socket.socket(socket.AF_INET, # Internet
+# sender: creating socket that will send over Internet using UDP protocol
+sender = socket.socket(socket.AF_INET, # Internet
                      socket.SOCK_DGRAM) # UDP
 
-sock2 = socket.socket(socket.AF_INET, # Internet
+# receiver: must bind to given listening address, will then listen for packets in loop later on
+receiver = socket.socket(socket.AF_INET, # Internet
                      socket.SOCK_DGRAM) # UDP
-sock2.bind((UDP_IP, UDP_PORT))
+receiver.bind((UDP_IP, UDP_PORT))
 
-sock.sendto(MESSAGE, (UDP_IP, UDP_PORT))
+# sender sends data as UDP packet
+sender.sendto(MESSAGE, (UDP_IP, UDP_PORT))
 
 
 
 while True:
-    data, addr = sock2.recvfrom(1024) # buffer size is 1024 bytes
+    data, addr = receiver.recvfrom(1024) # buffer size is 1024 bytes
     print "received message:", data
-    sock.close()
-    sock2.close()
+    sender.close()
+    receiver.close()
     break
 
-sock.close()
-sock2.close()
 # initialize client socket
 
 	# does socket need to have different ports for receiving vs listening???
