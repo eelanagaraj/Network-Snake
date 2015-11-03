@@ -12,7 +12,8 @@ import socket
 UDP_IP = "127.0.0.1"
 UDP_PORT = 5005
 
-# note that data sent must be a string (double check, but can't send lists, etc. so will need to do some string parsing)
+# note that data sent must be a string, though we can potentially use serializing libraries to send complex data objects
+	# my fave serializable python module is cPickle (pretty fast, straightforward to use) so we can look into that if need be
 MESSAGE = "Hello, World!"
 
 print "UDP target IP:", UDP_IP
