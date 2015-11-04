@@ -26,7 +26,7 @@ sender = socket.socket(socket.AF_INET, # Internet
 
 # receiver: must bind to given listening address, will then listen for packets in loop later on
 #receiver = socket.socket(socket.AF_INET, # Internet
-                     socket.SOCK_DGRAM) # UDP
+                    # socket.SOCK_DGRAM) # UDP
 #receiver.bind((UDP_IP, UDP_PORT))
 
 # sender sends data as UDP packet
