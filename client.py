@@ -9,7 +9,7 @@ import socket
 
 # some UDP packet sending experiments yay!
 
-UDP_IP = "127.0.0.1"
+UDP_IP = "192.168.89.131"
 UDP_PORT = 5005
 
 # note that data sent must be a string, though we can potentially use serializing libraries to send complex data objects
@@ -25,22 +25,22 @@ sender = socket.socket(socket.AF_INET, # Internet
                      socket.SOCK_DGRAM) # UDP
 
 # receiver: must bind to given listening address, will then listen for packets in loop later on
-receiver = socket.socket(socket.AF_INET, # Internet
+#receiver = socket.socket(socket.AF_INET, # Internet
                      socket.SOCK_DGRAM) # UDP
-receiver.bind((UDP_IP, UDP_PORT))
+#receiver.bind((UDP_IP, UDP_PORT))
 
 # sender sends data as UDP packet
 sender.sendto(MESSAGE, (UDP_IP, UDP_PORT))
 
 
-
+"""
 while True:
     data, addr = receiver.recvfrom(1024) # buffer size is 1024 bytes
     print "received message:", data
     sender.close()
     receiver.close()
     break
-
+"""
 # initialize client socket
 
 	# does socket need to have different ports for receiving vs listening???
