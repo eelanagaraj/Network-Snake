@@ -109,7 +109,6 @@ def play(Q, fps):
         ## need to take all this gui info -> pickle it 
         ## stick it in a queue to have it sent to the client
         
-        
         ## client side stuff: blit the snake, the apple & score
         #snake
         for i in range(0, len(xs)):
