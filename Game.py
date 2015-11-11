@@ -106,6 +106,8 @@ def play(Q, fps):
         elif dirs==3:
             xs[0] -= 20    
         s.fill((255, 255, 255))    
+        ## need to take all this gui info -> pickle it 
+        ## stick it in a queue to have it sent to the client
         
         ## client side stuff: blit the snake, the apple & score
         #snake
