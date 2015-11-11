@@ -6,7 +6,7 @@
 import socket
 
 
-UDP_IP = "192.168.89.131"
+UDP_IP = "10.251.48.230"
 UDP_PORT = 5005
 
 #receiver: must bind to given listening address, will then listen for packets in loop later on
@@ -19,7 +19,6 @@ receiver.bind((UDP_IP, UDP_PORT))
 while True:
     data, addr = receiver.recvfrom(1024) # buffer size is 1024 bytes
     print "received message:", data
-    sender.close()
     receiver.close()
     break
 

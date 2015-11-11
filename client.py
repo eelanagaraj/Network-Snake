@@ -8,36 +8,36 @@
 import socket
 
 # some UDP packet sending experiments yay!
-
-UDP_IP = "192.168.89.131"
-UDP_PORT = 5005
+My_IP = "10.251.54.255"
+Sean_IP = "10.251.54.174"
+UDP_IP = "10.251.48.230"
+UDP_PORT = 4000
 
 # note that data sent must be a string, though we can potentially use serializing libraries to send complex data objects
 	# my fave serializable python module is cPickle (pretty fast, straightforward to use) so we can look into that if need be
-MESSAGE = "Hello, World!"
+MESSAGE = "Hey Sean!!!"
 
-print "UDP target IP:", UDP_IP
-print "UDP target port:", UDP_PORT
-print "message:", MESSAGE
+#print "UDP target IP:", UDP_IP
+#print "UDP target port:", UDP_PORT
+#print "message:", MESSAGE
 
 # sender: creating socket that will send over Internet using UDP protocol
-sender = socket.socket(socket.AF_INET, # Internet
-                     socket.SOCK_DGRAM) # UDP
+sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 # receiver: must bind to given listening address, will then listen for packets in loop later on
 #receiver = socket.socket(socket.AF_INET, # Internet
-                    # socket.SOCK_DGRAM) # UDP
-#receiver.bind((UDP_IP, UDP_PORT))
+                   # socket.SOCK_DGRAM) # UDP
+#receiver.bind((My_IP, UDP_PORT))
 
-# sender sends data as UDP packet
-sender.sendto(MESSAGE, (UDP_IP, UDP_PORT))
+#sender sends data as UDP packet
+sender.sendto(MESSAGE, (Sean_IP, UDP_PORT))
 
 
 """
 while True:
     data, addr = receiver.recvfrom(1024) # buffer size is 1024 bytes
     print "received message:", data
-    sender.close()
+    #sender.close()
     receiver.close()
     break
 """

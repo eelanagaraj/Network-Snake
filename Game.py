@@ -107,6 +107,7 @@ def play(Q, fps):
             xs[0] -= 20    
         s.fill((255, 255, 255))    
         
+        
         ## client side stuff: blit the snake, the apple & score
         #snake
         for i in range(0, len(xs)):
