@@ -162,6 +162,10 @@ def packet_handler(curr_seq_number, seq_number, number_payloads, payloads) :
         guidict['applepos'] = applepos
         guidict['score'] = score
 
+	packet = str(guidict)
+	## push packet to qo
+	
+	
         ## client side stuff: blit the snake, the apple & score
         #snake
         for i in range(0, len(xs)):
