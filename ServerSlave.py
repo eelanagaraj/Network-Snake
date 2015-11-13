@@ -51,7 +51,8 @@ def packet_handler(curr_seq_number, seq_number, number_payloads, payloads) :
         
         
         
-    #### STUFF TO BE transplanted to this function for the game to play
+    #### STUFF TO BE transplanted to this function for the game to play, not complete yet just putting it up here so you know
+    #### what im up to
     
     """"# function to detect collisions serpent->serpent & serpent->apple
 	def collide(screen, x1, x2, y1, y2, w1, w2, h1, h2):
