@@ -3,69 +3,92 @@ import socket
 import time
 import Queue
 import threading
-""" two way communication:
-		Send packets to 127.0.0.1 from port 4000 to 4001"""
 import socket
+""" two way communication stuff:
+		Send packets to 127.0.0.1 from port 4000 to 4001"""
 
 
 
-## listener waits for packets, when received puts them in queue q
 def listener(UDP_IP, UDP_PORTin, q,):
+	## We listen on port UDP_PORTin, at ip UDP_IP for udp packets that we then push to our 
+	## queue q 
+
 	#receiver: must bind to given listening address, will then listen for packets in loop later on
 	receiver = socket.socket(socket.AF_INET, # Internet
                      socket.SOCK_DGRAM) # UDP
-
 	receiver.bind((UDP_IP, UDP_PORTin))
 	# sender.bind((UDP_IP, UDP_PORTout))
 
-	# we listen for packets and send them to the game thread
+	# we listen for packets and send them to the game thread/ put them in the queue
 	while True:
 		data, addr = receiver.recvfrom(512) # buffer size is 1024 bytes
 		print data
 		q.put(data)
+		time.sleep(1)
 
-# Sender listens to the queue q, when the latter contains a packet it sends it to Friend at port UDP_PORTout
-# will stop after 10 iterations, c.f. count
+
 def sender(FriendUDP_IP, UDP_PORTout,q,b,):
+	## Sender: listens to a queue q, pulls a packet if queue is not empty and
+	## sends it to FriendUDP_IP at port UDP_PORTout
+
 	# sender: creating socket that will send over Internet using UDP protocol
 	sender = socket.socket(socket.AF_INET, # Internet
                      socket.SOCK_DGRAM) # UDP
 
-	count = 1
 	while True:
-		time.sleep(1)
-		if q.qsize() > 0 and count < 10:
-			received = q.get()
-			MESSAGE = received[:-2]+ str(count)+b
-			sender.sendto(MESSAGE, (FriendUDP_IP, UDP_PORTout))
-			count += 1
-		elif count >= 10:
-			break
+		if q.qsize() > 0:#and count < 10:
+			packet = q.get()
+			sender.sendto(packet, (FriendUDP_IP, UDP_PORTout))
+			print 'sent' + b + '\n'
 
 
-UDP_IP = "10.251.54.174"
-EelaUDP_IP = "10.251.54.255"
+def packetcrafter(qi, qo):
+	## function that listens to a queue qi, pulls any pushed packets, crafts
+	## response packets and psuhes them to qo
+	while True: 
+		if qi.qsize() > 0:
+			received = qi.get()
+			print 'received'
+			count = received[-1]
+			packet = str(time.time())+ "____" + str(int(count) + 1)
+			qo.put(packet)
+
+
+UDP_IP = "192.168.1.161"
 UDP_PORTout = 4000
 UDP_PORTin = 4001
-Qs = Queue.Queue()
-Qc = Queue.Queue()
 
-receiveServer = threading.Thread(target= listener, args = (UDP_IP,UDP_PORTin,Qs,))
-sendServer = threading.Thread(target= sender, args = (UDP_IP, UDP_PORTout,Qs,'S',))
-receiveClient = threading.Thread(target= listener, args = (UDP_IP,UDP_PORTout,Qc,))
-sendClient = threading.Thread(target= sender, args = (UDP_IP, UDP_PORTin,Qc,'C',))
+Qsi = Queue.Queue()
+Qso = Queue.Queue()
+
+Qci = Queue.Queue()
+Qco = Queue.Queue()
+
+receiveServer = threading.Thread(target= listener, args = (UDP_IP,UDP_PORTin,Qsi,))
+crafterS = threading.Thread(target= packetcrafter, args = (Qsi,Qso,))
+sendServer = threading.Thread(target= sender, args = (UDP_IP, UDP_PORTout,Qso,'S',))
+
+
+receiveClient = threading.Thread(target= listener, args = (UDP_IP,UDP_PORTout,Qci,))
+crafterC = threading.Thread(target= packetcrafter, args = (Qci,Qco,))
+sendClient = threading.Thread(target= sender, args = (UDP_IP, UDP_PORTin,Qco,'C',))
 
 sendServer.start()
 receiveServer.start()
+crafterS.start()
+
 sendClient.start()
+crafterC.start()
 receiveClient.start()
 
-## We inject a packet to start message looping
+
 # sender: creating socket that will send over Internet using UDP protocol
 sender = socket.socket(socket.AF_INET, # Internet
                  socket.SOCK_DGRAM) # UDP
 
-MESSAGE = "waddup0S" 
+## We inject a packet to start message looping
+# sender: creating socket that will send over Internet using UDP protocol
+MESSAGE = "numero0" 
 sender.sendto(MESSAGE, (UDP_IP, UDP_PORTout))
 
 
