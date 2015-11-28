@@ -18,7 +18,6 @@
 #                     ~-_           _-~          ~-_       _-~   
 #                        ~--______-~                ~-___-~
 
-
 import pygame
 import random, sys
 import time
@@ -29,7 +28,7 @@ import ast
 from pygame.locals import *
 
 def client(qi,qo):
-	## GUI STUFF TO BE MOVED \/
+	rate = 0.5
 	# we start and customize the pygame gui
 	pygame.init();
 	s=pygame.display.set_mode((600, 600));
@@ -63,7 +62,6 @@ def client(qi,qo):
 	sttime = time.time()
 	while True:
 		print 'iterating client'
-		#dirs = 1
 		for e in pygame.event.get():
 			#print "<info>",e, "<info>"
 			if e.type == QUIT:
@@ -82,7 +80,7 @@ def client(qi,qo):
 		qo.put(dirs)
 		#time.sleep(1)
 		#clock.tick(fps)
-		while time.time() - sttime - loops < 0.9:		
+		while time.time() - sttime - loops < (rate - 0.1):		
 			if qi.qsize() > 0:
 				guidict = ast.literal_eval(qi.get())
 				with qi.mutex:
@@ -108,7 +106,7 @@ def client(qi,qo):
 			t=f.render("score:" + str(score), True, (0, 0, 0));
 			s.blit(t, (10, 10));
 			pygame.display.update()
-		while time.time() - sttime - loops < 0.999:
+		while time.time() - sttime - loops < (rate - 0.001):
 			pass	
 		loops += 1
 
@@ -139,6 +137,8 @@ def server(qi,qo):
 		return True
 
 	print 'game started'
+
+	rate = 0.5
 	# initial snake block positions
 	xs = [290, 290, 290, 290, 290]
 	ys = [290, 270, 250, 230, 210]
@@ -158,7 +158,7 @@ def server(qi,qo):
 		#time.sleep(0.4)
 		
 		# if we have a command in our queue
-		while time.time() - sttime - loops < 0.9:
+		while time.time() - sttime - loops < (rate - 0.1):
 			if qi.qsize() > 0:
 				dirs = int(qi.get())
 				print dirs, "direction", type(dirs)
