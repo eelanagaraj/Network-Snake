@@ -213,6 +213,7 @@ import time
 import threading
 import Queue
 import socket
+import ast
 from pygame.locals import *
 
 def client(qi,qo):
@@ -254,7 +255,7 @@ def client(qi,qo):
 		print 'iterating client'
 		clock.tick(fps)
 		if qi.qsize() > 0:
-			guidict = ast.literal_eval(Q.get())
+			guidict = ast.literal_eval(qi.get())
 			if guidict['GameOver'] == True:
 				sys.exit()
 			xs = guidict['xs']
@@ -269,14 +270,14 @@ def client(qi,qo):
 			if e.type == QUIT:
 				sys.exit(0)
 			elif e.type == KEYDOWN:
-			if e.key == K_UP and dirs != 0:
-				dirs = 2
-			elif e.key == K_DOWN and dirs != 2:
-				dirs = 0
-			elif e.key == K_LEFT and dirs != 1:
-				dirs = 3
-			elif e.key == K_RIGHT and dirs != 3:
-				dirs = 1
+				if e.key == K_UP and dirs != 0:
+					dirs = 2
+				elif e.key == K_DOWN and dirs != 2:
+					dirs = 0
+				elif e.key == K_LEFT and dirs != 1:
+					dirs = 3
+				elif e.key == K_RIGHT and dirs != 3:
+					dirs = 1
 			qo.put(dirs)
 			print dirs
 
@@ -344,6 +345,7 @@ def server(qi,qo):
 		out = str(guidict)
 		qo.put(out)
 		if GameOver:
+			print 'darn'
 			sys.exit()
 
 
@@ -363,11 +365,11 @@ def server(qi,qo):
 
 		# if we bite ourselves -> death
 		while i >= 2:
-			if collide(s, xs[0], xs[i], ys[0], ys[i], block_size[0], block_size[1],block_size[0], block_size[1]):
+			if collide(xs[0], xs[i], ys[0], ys[i], block_size[0], block_size[1],block_size[0], block_size[1]):
 				GameOver = die( score)
-				i-= 1
+			i-= 1
 		# if we hit an apple -> bigger snake + increment score
-		if collide(s, xs[0], applepos[0], ys[0], applepos[1], 20, 10, 20, 10):
+		if collide(xs[0], applepos[0], ys[0], applepos[1], 20, 10, 20, 10):
 			score+=1;
 			xs.append(700);
 			ys.append(700);
