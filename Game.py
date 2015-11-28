@@ -19,7 +19,6 @@
 #                        ~--______-~                ~-___-~
 
 
-
 import pygame
 import random, sys
 import time
@@ -50,8 +49,6 @@ def client(qi,qo):
 	#\/ modification to see the snake eat the first apple
 	applepos = (330,270)#(random.randint(0, 590), random.randint(0, 590));
 
-
-
 	# we create our apple and our snake blocks
 	block_size = (20, 20)
 	appleimage = pygame.Surface((block_size[0], block_size[1]));
@@ -66,17 +63,6 @@ def client(qi,qo):
 
 	while True:
 		print 'iterating client'
-		clock.tick(fps)
-		if qi.qsize() > 0:
-			guidict = ast.literal_eval(qi.get())
-			if guidict['GameOver'] == True:
-				sys.exit()
-			xs = guidict['xs']
-			ys = guidict['ys']  
-			applepos = guidict['applepos']
-			score = guidict['score']
-		else:
-			pass
 		#dirs = 1
 		for e in pygame.event.get():
 			#print "<info>",e, "<info>"
@@ -91,9 +77,22 @@ def client(qi,qo):
 					dirs = 3
 				elif e.key == K_RIGHT and dirs != 3:
 					dirs = 1
-			qo.put(dirs)
-			print dirs
-
+			
+			#print dirs
+		qo.put(dirs)
+		clock.tick(fps)
+		if qi.qsize() > 0:
+			guidict = ast.literal_eval(qi.get())
+			with qi.mutex:
+				qi.queue.clear()
+			if guidict['GameOver'] == True:
+				sys.exit()
+			xs = guidict['xs']
+			ys = guidict['ys']  
+			applepos = guidict['applepos']
+			score = guidict['score']
+		else:
+			pass
 		## weird bottom stuff
 		s.fill((255, 255, 255))
 		##rendering bit when packet received
@@ -146,29 +145,14 @@ def server(qi,qo):
 	applepos = (330,270)#(random.randint(0, 590), random.randint(0, 590));
 	block_size = (20, 20)
 	while True:
-		# we send gui info to the client
-
-		print 'iterating server'
-		guidict = dict()
-		guidict['xs'] = xs
-		guidict['ys'] = ys
-		guidict['applepos'] = applepos
-		guidict['score'] = score
-		guidict['GameOver'] = GameOver
-		out = str(guidict)
-		qo.put(out)
-		if GameOver:
-			print 'darn'
-			sys.exit()
-
-
 		# we run at one fps
 		### clock.tick(fps)
-		time.sleep(1)
+		
 		## Following lines will be server side stuff
 		# if we have a command in our queue
 		if qi.qsize() > 0:
 			dirs = int(qi.get())
+			print dirs, "direction", type(dirs)
 		else:
 			pass
 		# REF 1*
@@ -205,6 +189,20 @@ def server(qi,qo):
 			ys[0] -= 20
 		elif dirs==3:
 			xs[0] -= 20
+		# we send gui info to the client
+		print 'iterating server'
+		guidict = dict()
+		guidict['xs'] = xs
+		guidict['ys'] = ys
+		guidict['applepos'] = applepos
+		guidict['score'] = score
+		guidict['GameOver'] = GameOver
+		out = str(guidict)
+		qo.put(out)
+		if GameOver:
+			print 'darn'
+			sys.exit()
+		time.sleep(1)
 
 Q1 = Queue.Queue()
 Q2 = Queue.Queue()
