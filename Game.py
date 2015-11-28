@@ -58,9 +58,9 @@ def client(qi,qo):
 
 	# other stuff
 	f = pygame.font.SysFont('Arial', 20);
-	clock = pygame.time.Clock()
-
-
+	#clock = pygame.time.Clock()
+	loops = 0
+	sttime = time.time()
 	while True:
 		print 'iterating client'
 		#dirs = 1
@@ -80,19 +80,23 @@ def client(qi,qo):
 			
 			#print dirs
 		qo.put(dirs)
-		clock.tick(fps)
-		if qi.qsize() > 0:
-			guidict = ast.literal_eval(qi.get())
-			with qi.mutex:
-				qi.queue.clear()
-			if guidict['GameOver'] == True:
-				sys.exit()
-			xs = guidict['xs']
-			ys = guidict['ys']  
-			applepos = guidict['applepos']
-			score = guidict['score']
-		else:
-			pass
+		#time.sleep(1)
+		#clock.tick(fps)
+		while time.time() - sttime - loops < 0.9:		
+			if qi.qsize() > 0:
+				guidict = ast.literal_eval(qi.get())
+				with qi.mutex:
+					qi.queue.clear()
+				if guidict['GameOver'] == True:
+					sys.exit()
+				xs = guidict['xs']
+				ys = guidict['ys']  
+				applepos = guidict['applepos']
+				score = guidict['score']
+				break
+		
+
+
 		## weird bottom stuff
 		s.fill((255, 255, 255))
 		##rendering bit when packet received
@@ -104,6 +108,10 @@ def client(qi,qo):
 			t=f.render("score:" + str(score), True, (0, 0, 0));
 			s.blit(t, (10, 10));
 			pygame.display.update()
+		while time.time() - sttime - loops < 0.999:
+			pass	
+		loops += 1
+
 
 
 def server(qi,qo):
@@ -144,19 +152,18 @@ def server(qi,qo):
 	#\/ modification to see the snake eat the first apple
 	applepos = (330,270)#(random.randint(0, 590), random.randint(0, 590));
 	block_size = (20, 20)
+	sttime = time.time()
+	loops = 0
 	while True:
-		# we run at one fps
-		### clock.tick(fps)
+		#time.sleep(0.4)
 		
-		## Following lines will be server side stuff
 		# if we have a command in our queue
-		if qi.qsize() > 0:
-			dirs = int(qi.get())
-			print dirs, "direction", type(dirs)
-		else:
-			pass
-		# REF 1*
-
+		while time.time() - sttime - loops < 0.9:
+			if qi.qsize() > 0:
+				dirs = int(qi.get())
+				print dirs, "direction", type(dirs)
+				break
+		loops += 1
 		# weird coding from the misterious original writer of this thing
 		i = len(xs)-1
 
@@ -202,7 +209,8 @@ def server(qi,qo):
 		if GameOver:
 			print 'darn'
 			sys.exit()
-		time.sleep(1)
+		#while time.time() - sttime - loops < 0.999:
+		#	pass
 
 Q1 = Queue.Queue()
 Q2 = Queue.Queue()
