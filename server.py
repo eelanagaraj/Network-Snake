@@ -66,7 +66,51 @@ def server(qi,qo):
 	# initial snake block positions
 	xs = [290, 290, 290, 290, 290]
 	ys = [290, 270, 250, 230, 210]
-	
+		
+	# initial snake direction, score & position of the apple
+	dirs = 0;
+	score = 0;
+	#
+	GameOver = False
+	#\/ modification to see the snake eat the first apple
+	applepos = (330,270)#(random.randint(0, 590), random.randint(0, 590));
+	block_size = (20, 20)
+	sttime = time.time()
+	loops = 0
+	while True:		
+		# if we have a command in our queue
+		while time.time() - sttime - loops*rate < (rate - 0.1):
+			if qi.qsize() > 0:
+				dirs = int(qi.get())
+				print dirs, "direction", type(dirs)
+				break
+		
+		loops += 1
+		# weird coding from the misterious original writer of this thing
+		gameinfo = nextstep(xs,ys,applepos,score,GameOver,dirs)
+
+		xs = gameinfo[0]
+		ys = gameinfo[1]
+		applepos = gameinfo[2]
+		score = gameinfo[3]
+		GameOver = gameinfo[4]
+
+		print 'iterating server'
+
+		# we send gui info to the client
+		guidict = dict()
+		guidict['xs'] = xs
+		guidict['ys'] = ys
+		guidict['applepos'] = applepos
+		guidict['score'] = score
+		guidict['GameOver'] = GameOver
+
+		out = str(guidict)
+		qo.put(out)
+
+		if GameOver:
+			print 'darn'
+			sys.exit()
 
 
 def function5():

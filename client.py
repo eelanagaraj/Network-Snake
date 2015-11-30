@@ -67,7 +67,29 @@ def client(qi,qo):
 		while time.time() - sttime - loops*rate < (rate - 0.1):		
 			if qi.qsize() > 0:
 				guidict = ast.literal_eval(qi.get())
+				with qi.mutex:
+					qi.queue.clear()
+				if guidict['GameOver'] == True:
+					sys.exit()
+				xs = guidict['xs']
+				ys = guidict['ys']  
+				applepos = guidict['applepos']
+				score = guidict['score']
+				break
 
+		##rendering when gui info received
+		s.fill((255, 255, 255))
+		s.blit(appleimage, applepos);
+		for i in range(0, len(xs)):
+			s.blit(img, (xs[i], ys[i]))
+		
+		t=f.render("score:" + str(score), True, (0, 0, 0));
+		s.blit(t, (10, 10));
+		pygame.display.update()
+		
+		while time.time() - sttime - loops*rate < (rate - 0.001):
+			pass	
+		loops += 1
 
 
 def function5():
