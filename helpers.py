@@ -29,9 +29,11 @@ def packet_handler(curr_seq_number, seq_number, payloads) :
 
 """ function that puts data, sequence, etc. in serialized string form,
 	ready to send as UDP packet"""	
-def packer() :
+def packer(seq_num, payloads) :
+	# dictionary containing sequence number, list of packets, etc? 
+	
 	pass
-
+	
 
 """ listen on port UDP_PORTin, at ip UDP_IP for udp packets 
 	that we then push to our queue q """
