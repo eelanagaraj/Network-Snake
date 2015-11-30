@@ -30,8 +30,6 @@ def packet_handler(curr_seq_number, seq_number, payloads) :
 
 """ function that puts data, sequence, etc. in serialized string form """	
 def packer(seq_num, payloads) :
-	# dictionary containing sequence number, list of packets, etc? 
-	# test serialized objects with JSON vs cPickle??
 	peanuts = {'seq_num': seq_num , 'payloads' : payloads}
 	# cPickle --> NOTE not robust against malicious attacks
 	return pkl.dumps(peanuts)
