@@ -13,7 +13,7 @@ import socket
 def listener(UDP_IP, UDP_PORTin, q,):
 	## We listen on port UDP_PORTin, at ip UDP_IP for udp packets that we then push to our 
 	## queue q 
-
+	curr_seq = 0
 	#receiver: must bind to given listening address, will then listen for packets in loop later on
 	receiver = socket.socket(socket.AF_INET, # Internet
 					 socket.SOCK_DGRAM) # UDP
@@ -23,12 +23,15 @@ def listener(UDP_IP, UDP_PORTin, q,):
 	# we listen for packets and send them to the game thread/ put them in the queue
 	while True:
 		data, addr = receiver.recvfrom(512) # buffer size is 1024 bytes
-		
+
 		# this is where we wanna break down data & call packet handler
-
-
-		print data
-		q.put(data)
+		# seq_num = ??? extract sequence number from data packet
+		# payloads = ??? extract payloads from data packet
+		(curr_seq, moves) = packet_handler(curr_seq, seq_num, payloads)
+		#print data
+		for move in reversed(moves) :
+			q.put(move)
+		#q.put(data)
 		time.sleep(1)
 
 
@@ -36,7 +39,7 @@ def listener(UDP_IP, UDP_PORTin, q,):
 	payloads is a list of all data payloads that are included, in decr sequence order (e.g. [recent, ..., oldest])
 	return tuple of: (new_current_seq, [most recent payload, ... oldest]) 
 	**** maybe reverse within this function itself???? see what works best """
-def packet_handler(curr_seq_number, seq_number, number_payloads, payloads) :
+def packet_handler(curr_seq_number, seq_number, payloads) :
 	# check if current sequence number matches the sent packet
 	if (curr_seq_number == seq_number) :
 		return (seq_number + 1, [payloads[0]]) 
