@@ -31,10 +31,10 @@ def ServerSlave(Qi,Qo):
             counter += 1
 
 
-    """ assume data is of form: data = (seq_number, prev_included, data_payload, prev_payloads)
-        payloads is a list of all data payloads that are included, in decr sequence order (e.g. [recent, ..., oldest])
-        return tuple of: (new_current_seq, [most recent payload, ... oldest]) 
-        **** maybe reverse within this function itself???? see what works best """
+""" assume data is of form: data = (seq_number, prev_included, data_payload, prev_payloads)
+    payloads is a list of all data payloads that are included, in decr sequence order (e.g. [recent, ..., oldest])
+    return tuple of: (new_current_seq, [most recent payload, ... oldest]) 
+    **** maybe reverse within this function itself???? see what works best """
 def packet_handler(curr_seq_number, seq_number, number_payloads, payloads) :
     # check if current sequence number matches the sent packet
     if (curr_seq_number == seq_number) :

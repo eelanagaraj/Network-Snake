@@ -1,9 +1,10 @@
 #!/usr/bin/python
+
 import socket
 import time
 import Queue
 import threading
-import socket
+
 """ two way communication stuff:
 		Send packets to 127.0.0.1 from port 4000 to 4001"""
 
