@@ -3,10 +3,70 @@
 """ server-side: receive client's UDP packets of user inputs,
 		perform game computations on these inputs,
 		return entire graphical representation to client"""
-import socket
+
+import ast
+import pygame
+import Queue
+import random, sys
 import socket
 import struct
 import time
+import threading
+from pygame.locals import *
+
+import helpers.py
+
+
+def server(qi,qo):
+	# function to detect collisions serpent->serpent & serpent->apple
+	def collide(x1, x2, y1, y2, w1, w2, h1, h2):
+		if x1+w1>x2 and x1<x2+w2 and y1+h1>y2 and y1<y2+h2:
+			return True
+		else:
+			return False
+	    
+	# stuff to do if you die
+	def die(score):
+		print 'Game Over, your score was: ' + str(score)
+		return True
+	def  nextstep(xs,ys,applepos,score,GameOver, dirs):
+		i = len(xs)-1
+
+		# if we bite ourselves -> death
+		while i >= 3:
+			if collide(xs[0], xs[i], ys[0], ys[i], block_size[0], block_size[1],block_size[0], block_size[1]):
+				GameOver = die(score)
+			i-= 1
+		# if we hit an apple -> bigger snake + increment score
+		if collide(xs[0], applepos[0], ys[0], applepos[1], 20, 10, 20, 10):
+			score+=1;
+			xs.append(700);
+			ys.append(700);
+			applepos = (random.randint(1, 29)*20-10, random.randint(1, 29)*20-10)
+		# if we hit a wall -> death
+		if xs[0] < 0 or xs[0] > 580 or ys[0] < 0 or ys[0] > 580: 
+			GameOver = die(score)
+
+		i = len(xs)-1
+
+		# we update the position of the snake's body
+		while i >= 1:
+			xs[i] = xs[i-1];ys[i] = ys[i-1];i -= 1
+		if dirs==0:
+			ys[0] += 20
+		elif dirs==1:
+			xs[0] += 20
+		elif dirs==2:
+			ys[0] -= 20
+		elif dirs==3:
+			xs[0] -= 20
+		return (xs,ys,applepos,score,GameOver)
+
+	rate = 0.51
+	# initial snake block positions
+	xs = [290, 290, 290, 290, 290]
+	ys = [290, 270, 250, 230, 210]
+	
 
 
 def function5():
@@ -14,10 +74,10 @@ def function5():
 
 ## Server master function listens for a time stamp, unpacks it waits delay 
 ## seconds after the timestamp and calls function funk
-def ServerMeister(Server_ip = '10.251.51.211', Server_port = 5005, delay = 4, funk = function5):
-	#TCP_IP = '127.0.0.1'
-	TCP_IP = Server_ip
-	TCP_PORT = Server_port
+def ServerConnectionHandler(Server_ip = '10.251.51.211', Server_port = 5005, delay = 4, ServerFunction = function5):
+
+	TCP_IP = ServerIP
+	TCP_PORT = ServerPort
 	BUFFER_SIZE = 20  # Normally 1024, but we want fast response
 
 	packer = struct.Struct('d')
@@ -31,15 +91,14 @@ def ServerMeister(Server_ip = '10.251.51.211', Server_port = 5005, delay = 4, fu
 	    reftime = conn.recv(BUFFER_SIZE)
 	    if not reftime: break
 	    startref = packer.unpack(reftime)
-	    conn.send('received')  # echo
+	    conn.send('received')
 	conn.close()
-	#print startref[0]
 
 	while (time.time() - delay)*1000 < startref[0]:	pass
 
-	funk()
+	ServerFunction()
 
-ServerMeister()
+ServerConnectionHandler()
 
 
 UDP_IP = "10.251.48.230"

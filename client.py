@@ -5,26 +5,83 @@
 		receives graphical rendering as UDP packets from server,
 		renders graphics for user"""
 
+import ast
+import pygame
+import Queue
+import random, sys
 import socket
-
-import socket
+import struct
 import time
-import struct 
+import threading
+from pygame.locals import * 
+
+import helpers.py
+
+def client(qi,qo):
+	rate = 0.51
+	## we start and customize the pygame gui
+	pygame.init();
+	s=pygame.display.set_mode((600, 600));
+	pygame.display.set_caption('Snake');
+
+	# initial snake block positions 
+	xs = [290, 290, 290, 290, 290];
+	ys = [290, 270, 250, 230, 210];
+
+
+	# initial snake direction, score & position of the apple
+	dirs = 0;
+	score = 0;
+
+	# we create our apple and our snake blocks
+	block_size = (20, 20)
+	appleimage = pygame.Surface((block_size[0], block_size[1]));
+	appleimage.fill((0, 255, 0));
+	img = pygame.Surface((block_size[0], block_size[1]));
+	img.fill((255, 0, 0));
+
+	# other stuff
+	f = pygame.font.SysFont('Arial', 20);
+
+	loops = 0
+	sttime = time.time()
+	while True:
+		print 'iterating client'
+
+		# we detect keystrokes and put them in our queue qo
+		for e in pygame.event.get():
+			if e.type == QUIT:
+				sys.exit(0)
+			elif e.type == KEYDOWN:
+				if e.key == K_UP and dirs != 0:
+					dirs = 2
+				elif e.key == K_DOWN and dirs != 2:
+					dirs = 0
+				elif e.key == K_LEFT and dirs != 1:
+					dirs = 3
+				elif e.key == K_RIGHT and dirs != 3:
+					dirs = 1
+			
+		qo.put(dirs)
+		# we wait and listen for incomming gui info in qi
+		while time.time() - sttime - loops*rate < (rate - 0.1):		
+			if qi.qsize() > 0:
+				guidict = ast.literal_eval(qi.get())
+
 
 
 def function5():
 	print 5
 ## This Tcp wizardry sends timestamp to a server @ TCP_IP TCP_PORT waits delay seconds
 ## and then executes stuff, here this is print 5
-def ClientMeister(Server_ip = '10.251.51.211', Server_port = 5005, delay = 4, funk = function5):
-	TCP_IP = '127.0.0.1'
-	TCP_IP = Server_ip
+def ClientConnectionHandler(ServerIP = '10.251.51.211', ServerPort = 5005, delay = 4, ClientFunction = function5):
 
-	TCP_PORT = Server_port
+	TCP_IP = ServerIP
+	TCP_PORT = ServerPort
 	BUFFER_SIZE = 256
 
 	packer = struct.Struct('d')
-	reftime = packer.pack(time.time()*1000)#"Hello, World!"
+	reftime = packer.pack(time.time()*1000)
 
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.connect((TCP_IP, TCP_PORT))
@@ -36,10 +93,11 @@ def ClientMeister(Server_ip = '10.251.51.211', Server_port = 5005, delay = 4, fu
 
 	while (time.time() - delay)*1000 < startref[0]: pass
 
-	funk()
+	ClientFunction()
 
-ClientMeister()
+ClientConnectionHandler()
 # some UDP packet sending experiments yay!
+"""
 My_IP = "10.251.54.255"
 Sean_IP = "10.251.54.174"
 UDP_IP = "10.251.48.230"
@@ -67,6 +125,7 @@ sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 #sender sends data as UDP packet
 sender.sendto(MESSAGE, (Sean_IP, UDP_PORT))
 
+"""
 
 """
 while True:
