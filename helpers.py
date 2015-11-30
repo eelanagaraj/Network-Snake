@@ -6,7 +6,8 @@ import socket
 import Queue
 import threading
 import time
-
+import cPickle as pkl
+import ujson
 
 """ -assume data is of form: data = (seq_number, data_payload, prev_payloads)
 	-payloads is a list of all data payloads that are included, 
@@ -27,12 +28,15 @@ def packet_handler(curr_seq_number, seq_number, payloads) :
 		#OR if del is funky: return (seq_number + 1, payloads[:seq_number - curr_seq_number + 1])
 		# see which is faster --> del may be better long run since modifies in place but idk 
 
-""" function that puts data, sequence, etc. in serialized string form,
-	ready to send as UDP packet"""	
+""" function that puts data, sequence, etc. in serialized string form """	
 def packer(seq_num, payloads) :
 	# dictionary containing sequence number, list of packets, etc? 
-	
-	pass
+	# test serialized objects with JSON vs cPickle??
+	peanuts = {'seq_num': seq_num , 'payloads' : payloads}
+	# cPickle --> NOTE not robust against malicious attacks
+	return pkl.dumps(peanuts)
+	# uJSON --> fast, C-backend, more robust to malicious attacks
+	#return ujson.dumps(peanuts)
 	
 
 """ listen on port UDP_PORTin, at ip UDP_IP for udp packets 
