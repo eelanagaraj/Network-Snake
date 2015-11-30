@@ -28,14 +28,28 @@ def packet_handler(curr_seq_number, seq_number, payloads) :
 		#OR if del is funky: return (seq_number + 1, payloads[:seq_number - curr_seq_number + 1])
 		# see which is faster --> del may be better long run since modifies in place but idk 
 
-""" function that puts data, sequence, etc. in serialized string form """	
-def packer(seq_num, payloads) :
+
+""" function that puts data, sequence, etc. in serialized string form 
+	payloads should be a list of moves, most recent --> least """	
+def serializer(seq_num, payloads) :
 	peanuts = {'seq_num': seq_num , 'payloads' : payloads}
 	# cPickle --> NOTE not robust against malicious attacks
 	return pkl.dumps(peanuts)
 	# uJSON --> fast, C-backend, more robust to malicious attacks
 	#return ujson.dumps(peanuts)
-	
+
+
+""" un-serializes objects in the packet, returns (seq_num, payloads)"""
+def unserializer(UDP_data) :
+	# needs to be consistent with packer
+	# cPickle
+	peanuts = pkl.loads(UDP_data)
+	return (peanuts['seq_num'], peanuts['payloads'])
+	# ujson
+	# peanuts = ujson.loads(UDP_packet)
+	# return (peanuts['seq_num'], peanuts['payloads'])
+
+
 
 """ listen on port UDP_PORTin, at ip UDP_IP for udp packets 
 	that we then push to our queue q """
@@ -50,16 +64,13 @@ def listener(UDP_IP, UDP_PORTin, q,):
 	# we listen for packets and send them to the game thread/ put them in the queue
 	while True:
 		data, addr = receiver.recvfrom(512) # buffer size is 1024 bytes
-
-		# this is where we wanna break down data & call packet handler
-		# seq_num = ??? extract sequence number from data packet
-		# payloads = ??? extract payloads from data packet
+		seq_num, payloads = unserializer(data)
 		(curr_seq, moves) = packet_handler(curr_seq, seq_num, payloads)
-		#print data
+
+		# put moves on listening queue, oldest --> newest
 		for move in reversed(moves) :
 			q.put(move)
-		#q.put(data)
-		time.sleep(1)
+		time.sleep(1) # why doe??
 
 
 """ listens to a queue q, pulls a packet if queue is not empty and
