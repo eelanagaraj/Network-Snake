@@ -1,5 +1,5 @@
 
-##                                      (✪㉨✪) work in progress (✪㉨✪)
+##                                       Seems to be working good 
 #                    /^\/^\
 #                  _|__|  O|
 #         \/     /~     \_/ \
@@ -27,9 +27,12 @@ import socket
 import ast
 from pygame.locals import *
 
+
+#### Game speed is defined by rate in both functions with rate in 
+#### range(0.11 -> infinity)
 def client(qi,qo):
-	rate = 0.5
-	# we start and customize the pygame gui
+	rate = 0.51
+	## we start and customize the pygame gui
 	pygame.init();
 	s=pygame.display.set_mode((600, 600));
 	pygame.display.set_caption('Snake');
@@ -38,15 +41,10 @@ def client(qi,qo):
 	xs = [290, 290, 290, 290, 290];
 	ys = [290, 270, 250, 230, 210];
 
-	# number of frame per second the game can play at
-	fps = 1
 
 	# initial snake direction, score & position of the apple
 	dirs = 0;
 	score = 0;
-
-	#\/ modification to see the snake eat the first apple
-	applepos = (330,270)#(random.randint(0, 590), random.randint(0, 590));
 
 	# we create our apple and our snake blocks
 	block_size = (20, 20)
@@ -57,13 +55,14 @@ def client(qi,qo):
 
 	# other stuff
 	f = pygame.font.SysFont('Arial', 20);
-	#clock = pygame.time.Clock()
+
 	loops = 0
 	sttime = time.time()
 	while True:
 		print 'iterating client'
+
+		# we detect keystrokes and put them in our queue qo
 		for e in pygame.event.get():
-			#print "<info>",e, "<info>"
 			if e.type == QUIT:
 				sys.exit(0)
 			elif e.type == KEYDOWN:
@@ -76,11 +75,9 @@ def client(qi,qo):
 				elif e.key == K_RIGHT and dirs != 3:
 					dirs = 1
 			
-			#print dirs
 		qo.put(dirs)
-		#time.sleep(1)
-		#clock.tick(fps)
-		while time.time() - sttime - loops < (rate - 0.1):		
+		# we wait and listen for incomming gui info in qi
+		while time.time() - sttime - loops*rate < (rate - 0.1):		
 			if qi.qsize() > 0:
 				guidict = ast.literal_eval(qi.get())
 				with qi.mutex:
@@ -92,21 +89,18 @@ def client(qi,qo):
 				applepos = guidict['applepos']
 				score = guidict['score']
 				break
-		
 
-
-		## weird bottom stuff
+		##rendering when gui info received
 		s.fill((255, 255, 255))
-		##rendering bit when packet received
+		s.blit(appleimage, applepos);
 		for i in range(0, len(xs)):
 			s.blit(img, (xs[i], ys[i]))
-			# apple
-			s.blit(appleimage, applepos);
-			# score
-			t=f.render("score:" + str(score), True, (0, 0, 0));
-			s.blit(t, (10, 10));
-			pygame.display.update()
-		while time.time() - sttime - loops < (rate - 0.001):
+		
+		t=f.render("score:" + str(score), True, (0, 0, 0));
+		s.blit(t, (10, 10));
+		pygame.display.update()
+		
+		while time.time() - sttime - loops*rate < (rate - 0.001):
 			pass	
 		loops += 1
 
@@ -116,69 +110,28 @@ def server(qi,qo):
 	# function to detect collisions serpent->serpent & serpent->apple
 	def collide(x1, x2, y1, y2, w1, w2, h1, h2):
 		if x1+w1>x2 and x1<x2+w2 and y1+h1>y2 and y1<y2+h2:
-	        #f=pygame.font.SysFont('Arial', 30);
-	        #t=f.render('collision', True, (0, 0, 0));
-	        #screen.blit(t, (10, 270));
-	        #pygame.display.update();
-	        #pygame.time.wait(200);
 			return True
 		else:
 			return False
 	    
-	    
 	# stuff to do if you die
 	def die(score):
 		print 'Game Over, your score was: ' + str(score)
-	    #f=pygame.font.SysFont('Arial', 30);
-	    #t=f.render('Your score was: '+str(score), True, (0, 0, 0));
-	    #screen.blit(t, (10, 270));
-	    #pygame.display.update();
-	    #pygame.time.wait(2000);
 		return True
-
-	print 'game started'
-
-	rate = 0.5
-	# initial snake block positions
-	xs = [290, 290, 290, 290, 290]
-	ys = [290, 270, 250, 230, 210]
-	# number of frame per second the game can play at
-	fps = 1
-	# initial snake direction, score & position of the apple
-	dirs = 0;
-	score = 0;
-	#
-	GameOver = False
-	#\/ modification to see the snake eat the first apple
-	applepos = (330,270)#(random.randint(0, 590), random.randint(0, 590));
-	block_size = (20, 20)
-	sttime = time.time()
-	loops = 0
-	while True:
-		#time.sleep(0.4)
-		
-		# if we have a command in our queue
-		while time.time() - sttime - loops < (rate - 0.1):
-			if qi.qsize() > 0:
-				dirs = int(qi.get())
-				print dirs, "direction", type(dirs)
-				break
-		loops += 1
-		# weird coding from the misterious original writer of this thing
+	def  nextstep(xs,ys,applepos,score,GameOver, dirs):
 		i = len(xs)-1
 
 		# if we bite ourselves -> death
-		while i >= 2:
+		while i >= 3:
 			if collide(xs[0], xs[i], ys[0], ys[i], block_size[0], block_size[1],block_size[0], block_size[1]):
-				GameOver = die( score)
+				GameOver = die(score)
 			i-= 1
 		# if we hit an apple -> bigger snake + increment score
 		if collide(xs[0], applepos[0], ys[0], applepos[1], 20, 10, 20, 10):
 			score+=1;
 			xs.append(700);
 			ys.append(700);
-			applepos=(random.randint(0,590),random.randint(0,590))
-
+			applepos = (random.randint(1, 29)*20-10, random.randint(1, 29)*20-10)
 		# if we hit a wall -> death
 		if xs[0] < 0 or xs[0] > 580 or ys[0] < 0 or ys[0] > 580: 
 			GameOver = die(score)
@@ -196,21 +149,57 @@ def server(qi,qo):
 			ys[0] -= 20
 		elif dirs==3:
 			xs[0] -= 20
-		# we send gui info to the client
+		return (xs,ys,applepos,score,GameOver)
+
+	rate = 0.51
+	# initial snake block positions
+	xs = [290, 290, 290, 290, 290]
+	ys = [290, 270, 250, 230, 210]
+	
+	# initial snake direction, score & position of the apple
+	dirs = 0;
+	score = 0;
+	#
+	GameOver = False
+	#\/ modification to see the snake eat the first apple
+	applepos = (330,270)#(random.randint(0, 590), random.randint(0, 590));
+	block_size = (20, 20)
+	sttime = time.time()
+	loops = 0
+	while True:		
+		# if we have a command in our queue
+		while time.time() - sttime - loops*rate < (rate - 0.1):
+			if qi.qsize() > 0:
+				dirs = int(qi.get())
+				print dirs, "direction", type(dirs)
+				break
+		
+		loops += 1
+		# weird coding from the misterious original writer of this thing
+		gameinfo = nextstep(xs,ys,applepos,score,GameOver,dirs)
+
+		xs = gameinfo[0]
+		ys = gameinfo[1]
+		applepos = gameinfo[2]
+		score = gameinfo[3]
+		GameOver = gameinfo[4]
+
 		print 'iterating server'
+
+		# we send gui info to the client
 		guidict = dict()
 		guidict['xs'] = xs
 		guidict['ys'] = ys
 		guidict['applepos'] = applepos
 		guidict['score'] = score
 		guidict['GameOver'] = GameOver
+
 		out = str(guidict)
 		qo.put(out)
+
 		if GameOver:
 			print 'darn'
 			sys.exit()
-		#while time.time() - sttime - loops < 0.999:
-		#	pass
 
 Q1 = Queue.Queue()
 Q2 = Queue.Queue()
