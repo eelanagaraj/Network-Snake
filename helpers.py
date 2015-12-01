@@ -68,15 +68,24 @@ def listener(UDP_IP, UDP_PORTin, q,):
 	# we listen for packets and send them to the game thread/ put them in the queue
 	while True:
 		data, addr = receiver.recvfrom(512) # buffer size is 1024 bytes
-		"""	seq_num, payloads = unserializer(data)
-			(curr_seq, moves) = packet_handler(curr_seq, seq_num, payloads)
-
-			# put moves on listening queue, oldest --> newest
-			for move in reversed(moves) :
-				q.put(move)
-			time.sleep(1) # why doe??
-		"""
 		q.put(data)
+
+
+def server_listener(UDP_IP, UDP_PORTin, q,):
+	curr_seq = 0
+	#receiver: must bind to given listening address, will then listen for packets in loop later on
+	receiver = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	receiver.bind((UDP_IP, UDP_PORTin))
+	
+	# we listen for packets, but only queue moves that are relevant
+	while True:
+		data, addr = receiver.recvfrom(512) # buffer size is 1024 bytes
+		seq_num, payloads = unserializer(data)
+		(curr_seq, moves) = packet_handler(curr_seq, seq_num, payloads)
+
+		# put moves on listening queue, oldest --> newest
+		for move in reversed(moves) :
+			q.put(move)
 
 
 """ listens to a queue q, pulls a packet if queue is not empty and
