@@ -25,7 +25,7 @@ def count_received (expected_volume, match_data, receive_IP, receive_port):
 		try : 
 			data, addr = receiver.recvfrom(512)
 			if data == match_data :
-				packet_count = packet_count + 1
+				packet_count += 1
 				print packet_count
 		except KeyboardInterrupt :
 			print "packets received :", packet_count
