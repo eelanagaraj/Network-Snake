@@ -99,7 +99,7 @@ def server(qi, ClientIP):
 		"""
 		#print 'iterating server'
 		# tests
-		xs,ys,applepos,score,GameOver = 1,2,3,4,0
+		#xs,ys,applepos,score,GameOver = 1,2,3,4,0
 		# we send gui info to the client
 		guidict = dict()
 		guidict['xs'] = xs
@@ -108,9 +108,7 @@ def server(qi, ClientIP):
 		guidict['score'] = score
 		guidict['GameOver'] = GameOver
 
-		out = str(guidict)
-
-		packet = helpers.serializer(loops, out) 
+		packet = helpers.serializer(loops, guidict) 
 		sender.sendto(packet, (ClientIP, 4001))
 		#sender.sendto(packet, (ClientIP, 4001))
 
@@ -133,7 +131,7 @@ def ServerConnectionHandler(ServerIP = '10.251.51.241', ServerPort = 5005, delay
 	s.listen(1)
 
 	conn, addr = s.accept()
-	print 'Connection address:', addr
+	#print 'Connection address:', addr
 	while 1:
 	    reftime = conn.recv(BUFFER_SIZE)
 	    if not reftime: break
@@ -142,15 +140,17 @@ def ServerConnectionHandler(ServerIP = '10.251.51.241', ServerPort = 5005, delay
 	conn.close()
 
 	while (time.time() - delay)*1000 < startref[0]:	pass
-
+	print 'got here this time'
 	Qsi = Queue.Queue()
 
 	ServerReciever = threading.Thread(target = helpers.listener, args = (ServerIP, 4001, Qsi))
+	print 'wow now we here threading things'
 	Server = threading.Thread(target = server, args = (Qsi, Client_IP))
+	print 'some of the threating shoulda started mayb ips are wrong oops'
 
 	ServerReciever.start()
 	Server.start()
-	
+	print 'shoulda started serving'
 	ServerReciever.join()
 	Server.join()
 
