@@ -23,6 +23,7 @@ def count_received (expected_volume, match_data, receive_IP, receive_port):
 			data, addr = receiver.recvfrom(512)
 			if data == match_data :
 				packet_count = packet_count + 1
+			print packet_count
 		except KeyboardInterrupt :
 			print "packets received :", packet_count
 			print "percent received :", packet_count/expected_volume
@@ -33,7 +34,7 @@ def count_received (expected_volume, match_data, receive_IP, receive_port):
 receiver_IP = "192.168.89.131"
 
 packet = helpers.serializer(14, [1,0,3]) 
-machine = raw_input("Sender machine press 0, receiver machine press 1")
+machine = int(raw_input("Sender machine press 0, receiver machine press 1"))
 if machine :
 	count_received(1000, packet, receiver_IP, 4001)
 else :
