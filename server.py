@@ -111,8 +111,8 @@ def server(qi, ClientIP):
 		out = str(guidict)
 
 		packet = helpers.serializer(loops, out) 
-		sender.sendto(packet, (ClientIP, 4000))
-		#sender.sendto(packet, (ClientIP, 4000))
+		sender.sendto(packet, (ClientIP, 4001))
+		#sender.sendto(packet, (ClientIP, 4001))
 
 		if GameOver:
 			print 'darn'
