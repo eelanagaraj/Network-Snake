@@ -17,6 +17,8 @@ from pygame.locals import *
 
 import helpers
 
+Client_IP = "192.168.89.131"
+
 def client(qi, ServerIP):
 	sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
