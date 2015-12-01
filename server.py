@@ -96,7 +96,7 @@ def server(qi, ClientIP):
 		applepos = gameinfo[2]
 		score = gameinfo[3]
 		GameOver = gameinfo[4]
-"""
+		"""
 		#print 'iterating server'
 		# tests
 		xs,ys,applepos,score,GameOver = 1,2,3,4,0
@@ -184,4 +184,4 @@ while True:
 
 # perform snake computations on this extracted data
 
-# send UDP packet containing graphical rendering to the client socket
+# send UDP packet containing graphical rendering to the client socket"""
