@@ -113,12 +113,9 @@ def server(qi,qo):
 			sys.exit()
 
 
-def function5():
-	print 5
-
 ## Server master function listens for a time stamp, unpacks it waits delay 
 ## seconds after the timestamp and calls function funk
-def ServerConnectionHandler(Server_ip = '10.251.51.211', Server_port = 5005, delay = 4, ServerFunction = function5):
+def ServerConnectionHandler(Server_ip = '10.251.51.211', Server_port = 5005, delay = 4, ServerFunction = server ):
 
 	TCP_IP = ServerIP
 	TCP_PORT = ServerPort
