@@ -61,7 +61,9 @@ def client(qi,qo):
 					dirs = 3
 				elif e.key == K_RIGHT and dirs != 3:
 					dirs = 1
-			
+		
+		# so here, why don't we just send the packets of past moves instead of sending to the out queue?
+
 		qo.put(dirs)
 		# we wait and listen for incomming gui info in qi
 		while time.time() - sttime - loops*rate < (rate - 0.1):		
