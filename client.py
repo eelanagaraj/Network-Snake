@@ -15,9 +15,9 @@ import time
 import threading
 from pygame.locals import * 
 
-import helpers.py
+import helpers
 
-def client(qi):
+def client(qi, ServerIP):
 	sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
 	rate = 0.51
@@ -74,12 +74,15 @@ def client(qi):
 		dirs_list[1] = pre1
 		dirs_list[2] = pre2
   
-		packet = serializer(loops, dirs_list) 
-		sender.sendto(packet, ('10.251.51.211', 5005))
+  		# send packet multiple times for redundancy
+		packet = helpers.serializer(loops, dirs_list) 
+		sender.sendto(packet, (ServerIP, 5005))
+		sender.sendto(packet, (ServerIP, 5005))
 
 		# we wait and listen for incomming gui info in qi
 		while time.time() - sttime - loops*rate < (rate - 0.1):		
 			if qi.qsize() > 0:
+				
 				guidict = ast.literal_eval(qi.get())
 				with qi.mutex:
 					qi.queue.clear()
@@ -130,7 +133,7 @@ def ClientConnectionHandler(ServerIP = '10.251.51.211', ServerPort = 5005, delay
 	Qci = Queue.Queue()
 	
 	ClientReciever = threading.Thread(target = listener, args = ('10.251.51.211',4000,QCi))
-	Client = threading.Thread(target = client, args = (Qci))
+	Client = threading.Thread(target = client, args = (Qci, ServerIP))
 	
 	ClientReciever.start()
 	Client.start()
