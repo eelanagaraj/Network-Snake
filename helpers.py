@@ -7,7 +7,7 @@ import Queue
 import threading
 import time
 import cPickle as pkl
-import ujson
+#import ujson
 
 
 """ Eela IP 10.251.51.241
