@@ -5,18 +5,18 @@
 		return entire graphical representation to client"""
 
 import ast
-import pygame
+#import pygame
 import Queue
 import random, sys
 import socket
 import struct
 import time
 import threading
-from pygame.locals import *
+#from pygame.locals import *
 
 import helpers
 
-Client_IP = "10.251.51.241"
+Client_IP = "192.168.89.131"
 
 def server(qi, ClientIP):
 	# function to detect collisions serpent->serpent & serpent->apple
@@ -90,16 +90,16 @@ def server(qi, ClientIP):
 		
 		loops += 1
 		# weird coding from the misterious original writer of this thing
-		gameinfo = nextstep(xs,ys,applepos,score,GameOver,dirs)
-
+		"""gameinfo = nextstep(xs,ys,applepos,score,GameOver,dirs)
 		xs = gameinfo[0]
 		ys = gameinfo[1]
 		applepos = gameinfo[2]
 		score = gameinfo[3]
 		GameOver = gameinfo[4]
-
-		print 'iterating server'
-
+"""
+		#print 'iterating server'
+		# tests
+		xs,ys,applepos,score,GameOver = 1,2,3,4,0
 		# we send gui info to the client
 		guidict = dict()
 		guidict['xs'] = xs
@@ -145,7 +145,7 @@ def ServerConnectionHandler(ServerIP = '10.251.51.211', ServerPort = 5005, delay
 
 	Qsi = Queue.Queue()
 
-	ServerReciever = threading.Thread(target = listener, args = (ServerIP, 4001, Qsi))
+	ServerReciever = threading.Thread(target = helpers.listener, args = (ServerIP, 4001, Qsi))
 	Server = threading.Thread(target = server, args = (Qsi, Client_IP))
 
 	ServerReciever.start()
