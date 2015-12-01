@@ -84,8 +84,8 @@ def server(qi, ClientIP):
 		# if we have a command in our queue
 		while time.time() - sttime - loops*rate < (rate - 0.1):
 			if qi.qsize() > 0:
-				dirs = int(qi.get())
-				print dirs, "direction", type(dirs)
+				#dirs = int(qi.get())
+				print dirs, "direction"
 				break
 		
 		loops += 1
