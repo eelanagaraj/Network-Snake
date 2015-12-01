@@ -78,7 +78,7 @@ def client(qi, ServerIP):
 		dirs_list[0] = dirs
 		dirs_list[1] = pre1
 		dirs_list[2] = pre2
-  
+
   		# send packet multiple times for redundancy
 		packet = helpers.serializer(loops, dirs_list) 
 		sender.sendto(packet, (ServerIP, 4001))
