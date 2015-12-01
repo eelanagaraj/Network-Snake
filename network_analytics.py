@@ -30,7 +30,7 @@ def count_received (expected_volume, match_data, receive_IP, receive_port):
 	print "packets recceived :", packet_count
 	print "percent received :", packet_count/expected_volume
 
-receiver_IP = "FILL IN"
+receiver_IP = "192.168.89.131"
 
 packet = helpers.serializer(14, [1,0,3]) 
 machine = raw_input("Sender machine press 0, receiver machine press 1")
