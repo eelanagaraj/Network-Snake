@@ -14,7 +14,7 @@ import time
 import threading
 from pygame.locals import *
 
-import helpers.py
+import helpers
 
 
 def server(qi):
@@ -62,6 +62,8 @@ def server(qi):
 			xs[0] -= 20
 		return (xs,ys,applepos,score,GameOver)
 
+	sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	
 	rate = 0.51
 	# initial snake block positions
 	xs = [290, 290, 290, 290, 290]
@@ -106,7 +108,10 @@ def server(qi):
 		guidict['GameOver'] = GameOver
 
 		out = str(guidict)
-		qo.put(out)
+
+		packet = helpers.serializer(loops, out) 
+		sender.sendto(packet, ('10.251.51.211', 4000))
+		#sender.sendto(packet, ('10.251.51.211', 4000))
 
 		if GameOver:
 			print 'darn'
@@ -115,7 +120,7 @@ def server(qi):
 
 ## Server master function listens for a time stamp, unpacks it waits delay 
 ## seconds after the timestamp and calls function funk
-def ServerConnectionHandler(Server_ip = '10.251.51.211', Server_port = 5005, delay = 4, ServerFunction = server ):
+def ServerConnectionHandler(ServerIP = '10.251.51.211', ServerPort = 5005, delay = 4):
 
 	TCP_IP = ServerIP
 	TCP_PORT = ServerPort
@@ -137,7 +142,16 @@ def ServerConnectionHandler(Server_ip = '10.251.51.211', Server_port = 5005, del
 
 	while (time.time() - delay)*1000 < startref[0]:	pass
 
-	ServerFunction()
+	Qsi = Queue.Queue()
+
+	ServerReciever = threading.Thread(target = listener, args = (ServerIP, 4001, Qsi))
+	Server = threading.Thread(target = server, args = (Qsi))
+
+	ServerReciever.start()
+	Server.start()
+	
+	ServerReciever.join()
+	Server.join()
 
 ServerConnectionHandler()
 

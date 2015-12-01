@@ -15,7 +15,7 @@ import time
 import threading
 from pygame.locals import * 
 
-import helpers.py
+import helpers
 
 def client(qi):
 	sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -75,7 +75,7 @@ def client(qi):
 		dirs_list[2] = pre2
   
 		packet = serializer(loops, dirs_list) 
-		sender.sendto(packet, ('10.251.51.211', 5005))
+		sender.sendto(packet, ('10.251.51.211', 4001))
 
 		# we wait and listen for incomming gui info in qi
 		while time.time() - sttime - loops*rate < (rate - 0.1):		
