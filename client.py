@@ -130,6 +130,7 @@ def ClientConnectionHandler(ServerIP = Server_IP, ServerPort = 5005, delay = 4):
 	s.connect((TCP_IP, TCP_PORT))
 
 	# so here can we send the init position/config also
+	# package it all up wiht reftime, etc., send as one tcp packet
 
 
 	s.send(reftime)
