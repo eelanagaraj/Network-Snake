@@ -17,7 +17,7 @@ from pygame.locals import *
 import helpers.py
 
 
-def server(qi,qo):
+def server(qi):
 	# function to detect collisions serpent->serpent & serpent->apple
 	def collide(x1, x2, y1, y2, w1, w2, h1, h2):
 		if x1+w1>x2 and x1<x2+w2 and y1+h1>y2 and y1<y2+h2:
@@ -113,12 +113,9 @@ def server(qi,qo):
 			sys.exit()
 
 
-def function5():
-	print 5
-
 ## Server master function listens for a time stamp, unpacks it waits delay 
 ## seconds after the timestamp and calls function funk
-def ServerConnectionHandler(Server_ip = '10.251.51.211', Server_port = 5005, delay = 4, ServerFunction = function5):
+def ServerConnectionHandler(Server_ip = '10.251.51.211', Server_port = 5005, delay = 4, ServerFunction = server ):
 
 	TCP_IP = ServerIP
 	TCP_PORT = ServerPort

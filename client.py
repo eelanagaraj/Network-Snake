@@ -94,11 +94,9 @@ def client(qi,qo):
 		loops += 1
 
 
-def function5():
-	print 5
 ## This Tcp wizardry sends timestamp to a server @ TCP_IP TCP_PORT waits delay seconds
 ## and then executes stuff, here this is print 5
-def ClientConnectionHandler(ServerIP = '10.251.51.211', ServerPort = 5005, delay = 4, ClientFunction = function5):
+def ClientConnectionHandler(ServerIP = '10.251.51.211', ServerPort = 5005, delay = 4, ClientFunction = client):
 
 	TCP_IP = ServerIP
 	TCP_PORT = ServerPort
