@@ -128,6 +128,10 @@ def ClientConnectionHandler(ServerIP = Server_IP, ServerPort = 5005, delay = 4):
 
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.connect((TCP_IP, TCP_PORT))
+
+	# so here can we send the init position/config also
+
+
 	s.send(reftime)
 	data = s.recv(BUFFER_SIZE)
 	s.close()
