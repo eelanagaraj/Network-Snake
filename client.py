@@ -40,6 +40,8 @@ def client(qi, ServerIP):
 	# we create our apple and our snake blocks
 	block_size = (20, 20)
 	appleimage = pygame.Surface((block_size[0], block_size[1]));
+	# hacky bullsheeeet below so double check
+	applepos = (330,270)
 	appleimage.fill((0, 255, 0));
 	img = pygame.Surface((block_size[0], block_size[1]));
 	img.fill((255, 0, 0));
