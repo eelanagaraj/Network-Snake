@@ -84,7 +84,7 @@ def server(qi, ClientIP):
 		# if we have a command in our queue
 		while time.time() - sttime - loops*rate < (rate - 0.1):
 			if qi.qsize() > 0:
-				#dirs = int(qi.get())
+				dirs = qi.get()#int(qi.get())
 				print dirs, "direction"
 				break
 		
@@ -95,11 +95,11 @@ def server(qi, ClientIP):
 		ys = gameinfo[1]
 		applepos = gameinfo[2]
 		score = gameinfo[3]
-		GameOver = gameinfo[4]
+		GameOver = gameinfo[4] """
+
+		print 'iterating server'
+
 		"""
-		#print 'iterating server'
-		# tests
-		#xs,ys,applepos,score,GameOver = 1,2,3,4,0
 		# we send gui info to the client
 		guidict = dict()
 		guidict['xs'] = xs
@@ -143,7 +143,7 @@ def ServerConnectionHandler(ServerIP = '10.251.51.241', ServerPort = 5005, delay
 	print 'got here this time'
 	Qsi = Queue.Queue()
 
-	ServerReciever = threading.Thread(target = helpers.listener, args = (ServerIP, 4001, Qsi))
+	ServerReciever = threading.Thread(target = helpers.server_listener, args = (ServerIP, 4001, Qsi))
 	print 'wow now we here threading things'
 	Server = threading.Thread(target = server, args = (Qsi, Client_IP))
 	print 'some of the threating shoulda started mayb ips are wrong oops'
