@@ -51,6 +51,7 @@ def client(qi, ServerIP):
 	f = pygame.font.SysFont('Arial', 20);
 
 	loops = 0
+	curr_seq_number = 0
 	dirs_list = [-1,-1,-1]
 	pre1 = -1
 	pre2 = -1
@@ -83,22 +84,28 @@ def client(qi, ServerIP):
 		packet = helpers.serializer(loops, dirs_list) 
 		sender.sendto(packet, (ServerIP, 4001))
 		sender.sendto(packet, (ServerIP, 4001))
-
+		sender.sendto(packet, (ServerIP, 4001))
+		
 		# we wait and listen for incomming gui info in qi
 		while time.time() - sttime - loops*rate < (rate - 0.1):		
 			if qi.qsize() > 0:
 				# need to unserialize packet
 				seq_number,data = helper.unserializer(qi.get())
-				guidict = ast.literal_eval(data)
-				with qi.mutex:
-					qi.queue.clear()
-				if guidict['GameOver'] == True:
-					sys.exit()
-				xs = guidict['xs']
-				ys = guidict['ys']  
-				applepos = guidict['applepos']
-				score = guidict['score']
-				break
+
+				# need to handle configuration sequence orderings here
+				# should it just be < ??
+				if (curr_seq_number <= seq_number) :
+					curr_seq_number = seq_number
+					guidict = ast.literal_eval(data)
+					with qi.mutex:
+						qi.queue.clear()
+					if guidict['GameOver'] == True:
+						sys.exit()
+					xs = guidict['xs']
+					ys = guidict['ys']  
+					applepos = guidict['applepos']
+					score = guidict['score']
+					break
 
 		##rendering when gui info received
 		s.fill((255, 255, 255))

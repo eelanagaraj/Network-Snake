@@ -88,7 +88,8 @@ def server(qi, ClientIP):
 				dirs = int(qi.get())
 				print dirs, "direction"
 				break
-		
+
+		# here loops represents the config number we are sending back
 		loops += 1
 		# weird coding from the misterious original writer of this thing
 		gameinfo = nextstep(xs,ys,applepos,score,GameOver,dirs)
@@ -110,7 +111,7 @@ def server(qi, ClientIP):
 
 		packet = helpers.serializer(loops, guidict) 
 		sender.sendto(packet, (ClientIP, 4001))
-		#sender.sendto(packet, (ClientIP, 4001))
+		sender.sendto(packet, (ClientIP, 4001))
 
 		if GameOver:
 			print 'darn'
