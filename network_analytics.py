@@ -3,6 +3,7 @@
 import sys
 import socket
 import helpers
+import time
 
 """ use to test average rate of packet drops on network, etc."""
 
@@ -18,16 +19,20 @@ def count_received (expected_volume, match_data, receive_IP, receive_port):
 	receiver = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	receiver.bind((receive_IP, receive_port))
 	packet_count = 0
-	while (packet_count < expected_volume) :
-		try :
+	timeout = time.time() + 5
+	print timeout
+	while (packet_count < expected_volume and time.time() < timeout) :
+		try : 
 			data, addr = receiver.recvfrom(512)
 			if data == match_data :
 				packet_count = packet_count + 1
-			print packet_count
+				print packet_count
 		except KeyboardInterrupt :
 			print "packets received :", packet_count
 			print "percent received :", packet_count/float(expected_volume)
+			receiver.close()
 			sys.exit()
+	receiver.close()
 	print "packets recceived :", packet_count
 	print "percent received :", packet_count/float(expected_volume)
 
