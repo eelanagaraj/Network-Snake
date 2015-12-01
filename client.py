@@ -82,8 +82,9 @@ def client(qi, ServerIP):
 		# we wait and listen for incomming gui info in qi
 		while time.time() - sttime - loops*rate < (rate - 0.1):		
 			if qi.qsize() > 0:
-				
-				guidict = ast.literal_eval(qi.get())
+				# need to unserialize packet
+				seq_number,data = helper.unserializer(qi.get())
+				guidict = ast.literal_eval(data)
 				with qi.mutex:
 					qi.queue.clear()
 				if guidict['GameOver'] == True:

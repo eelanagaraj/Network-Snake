@@ -9,6 +9,12 @@ import time
 import cPickle as pkl
 import ujson
 
+
+""" Eela IP 10.251.51.241
+	Matt IP 192.168.89.131
+	Sean IP
+"""
+
 """ -assume data is of form: data = (seq_number, data_payload, prev_payloads)
 	-payloads is a list of all data payloads that are included, 
 		in decr sequence order (e.g. [recent, ..., oldest])

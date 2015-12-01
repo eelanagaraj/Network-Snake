@@ -16,8 +16,9 @@ from pygame.locals import *
 
 import helpers
 
+Client_IP = "10.251.51.241"
 
-def server(qi):
+def server(qi, ClientIP):
 	# function to detect collisions serpent->serpent & serpent->apple
 	def collide(x1, x2, y1, y2, w1, w2, h1, h2):
 		if x1+w1>x2 and x1<x2+w2 and y1+h1>y2 and y1<y2+h2:
@@ -110,8 +111,8 @@ def server(qi):
 		out = str(guidict)
 
 		packet = helpers.serializer(loops, out) 
-		sender.sendto(packet, ('10.251.51.211', 4000))
-		#sender.sendto(packet, ('10.251.51.211', 4000))
+		sender.sendto(packet, (ClientIP, 4000))
+		#sender.sendto(packet, (ClientIP, 4000))
 
 		if GameOver:
 			print 'darn'
@@ -145,7 +146,7 @@ def ServerConnectionHandler(ServerIP = '10.251.51.211', ServerPort = 5005, delay
 	Qsi = Queue.Queue()
 
 	ServerReciever = threading.Thread(target = listener, args = (ServerIP, 4001, Qsi))
-	Server = threading.Thread(target = server, args = (Qsi))
+	Server = threading.Thread(target = server, args = (Qsi, Client_IP))
 
 	ServerReciever.start()
 	Server.start()
