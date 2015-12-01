@@ -76,8 +76,8 @@ def client(qi, ServerIP):
   
   		# send packet multiple times for redundancy
 		packet = helpers.serializer(loops, dirs_list) 
-		sender.sendto(packet, (ServerIP, 5005))
-		sender.sendto(packet, (ServerIP, 5005))
+		sender.sendto(packet, (ServerIP, 4000))
+		sender.sendto(packet, (ServerIP, 4000))
 
 		# we wait and listen for incomming gui info in qi
 		while time.time() - sttime - loops*rate < (rate - 0.1):		
