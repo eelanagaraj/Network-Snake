@@ -141,7 +141,7 @@ def ServerConnectionHandler(Server_ip = '10.251.51.211', Server_port = 5005, del
 
 ServerConnectionHandler()
 
-
+"""
 UDP_IP = "10.251.48.230"
 UDP_PORT = 5005
 
@@ -157,7 +157,6 @@ while True:
     print "received message:", data
     receiver.close()
     break
-
 
 
 

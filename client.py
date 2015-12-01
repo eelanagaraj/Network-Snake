@@ -17,7 +17,9 @@ from pygame.locals import *
 
 import helpers.py
 
-def client(qi,qo):
+def client(qi):
+	sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+
 	rate = 0.51
 	## we start and customize the pygame gui
 	pygame.init();
@@ -44,6 +46,9 @@ def client(qi,qo):
 	f = pygame.font.SysFont('Arial', 20);
 
 	loops = 0
+	dirs_list = [-1,-1,-1]
+	pre1 = -1
+	pre2 = -1
 	sttime = time.time()
 	while True:
 		print 'iterating client'
@@ -61,10 +66,17 @@ def client(qi,qo):
 					dirs = 3
 				elif e.key == K_RIGHT and dirs != 3:
 					dirs = 1
-		
-		# so here, why don't we just send the packets of past moves instead of sending to the out queue?
 
-		qo.put(dirs)
+		pre1 = dirs_list[0]
+		pre2 = dirs_list[1]
+
+		dirs_list[0] = dirs
+		dirs_list[1] = pre1
+		dirs_list[2] = pre2
+  
+		packet = serializer(loops, dirs_list) 
+		sender.sendto(packet, ('10.251.51.211', 5005))
+
 		# we wait and listen for incomming gui info in qi
 		while time.time() - sttime - loops*rate < (rate - 0.1):		
 			if qi.qsize() > 0:
@@ -96,7 +108,7 @@ def client(qi,qo):
 
 ## This Tcp wizardry sends timestamp to a server @ TCP_IP TCP_PORT waits delay seconds
 ## and then executes stuff, here this is print 5
-def ClientConnectionHandler(ServerIP = '10.251.51.211', ServerPort = 5005, delay = 4, ClientFunction = client):
+def ClientConnectionHandler(ServerIP = '10.251.51.211', ServerPort = 5005, delay = 4):
 
 	TCP_IP = ServerIP
 	TCP_PORT = ServerPort
@@ -115,7 +127,16 @@ def ClientConnectionHandler(ServerIP = '10.251.51.211', ServerPort = 5005, delay
 
 	while (time.time() - delay)*1000 < startref[0]: pass
 
-	ClientFunction()
+	Qci = Queue.Queue()
+	
+	ClientReciever = threading.Thread(target = listener, args = ('10.251.51.211',4000,QCi))
+	Client = threading.Thread(target = client, args = (Qci))
+	
+	ClientReciever.start()
+	Client.start()
+	
+	ClientReciever.join()
+	Client.join()
 
 ClientConnectionHandler()
 # some UDP packet sending experiments yay!
