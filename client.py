@@ -76,8 +76,8 @@ def client(qi, ServerIP):
   
   		# send packet multiple times for redundancy
 		packet = helpers.serializer(loops, dirs_list) 
-		sender.sendto(packet, (ServerIP, 4000))
-		sender.sendto(packet, (ServerIP, 4000))
+		sender.sendto(packet, (ServerIP, 5005))
+		sender.sendto(packet, (ServerIP, 5005))
 
 		# we wait and listen for incomming gui info in qi
 		while time.time() - sttime - loops*rate < (rate - 0.1):		
@@ -112,7 +112,7 @@ def client(qi, ServerIP):
 
 ## This Tcp wizardry sends timestamp to a server @ TCP_IP TCP_PORT waits delay seconds
 ## and then executes stuff, here this is print 5
-def ClientConnectionHandler(ServerIP = '10.251.51.211', ServerPort = 5005, delay = 4):
+def ClientConnectionHandler(ServerIP = '10.251.51.241', ServerPort = 5005, delay = 4):
 
 	TCP_IP = ServerIP
 	TCP_PORT = ServerPort
@@ -133,7 +133,7 @@ def ClientConnectionHandler(ServerIP = '10.251.51.211', ServerPort = 5005, delay
 
 	Qci = Queue.Queue()
 	
-	ClientReciever = threading.Thread(target = listener, args = ('10.251.51.211',4000,QCi))
+	ClientReciever = threading.Thread(target = helpers.listener, args = (Client_IP,4000,QCi))
 	Client = threading.Thread(target = client, args = (Qci, ServerIP))
 	
 	ClientReciever.start()
