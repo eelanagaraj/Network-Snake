@@ -26,10 +26,10 @@ def count_received (expected_volume, match_data, receive_IP, receive_port):
 			print packet_count
 		except KeyboardInterrupt :
 			print "packets received :", packet_count
-			print "percent received :", packet_count/expected_volume
+			print "percent received :", packet_count/float(expected_volume)
 			sys.exit()
 	print "packets recceived :", packet_count
-	print "percent received :", packet_count/expected_volume
+	print "percent received :", packet_count/float(expected_volume)
 
 receiver_IP = "192.168.89.131"
 
