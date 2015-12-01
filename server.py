@@ -17,6 +17,7 @@ import threading
 import helpers
 
 Client_IP = "192.168.89.131"
+Server_IP = "10.251.49.209"
 
 def server(qi, ClientIP):
 	# function to detect collisions serpent->serpent & serpent->apple
@@ -84,22 +85,21 @@ def server(qi, ClientIP):
 		# if we have a command in our queue
 		while time.time() - sttime - loops*rate < (rate - 0.1):
 			if qi.qsize() > 0:
-				dirs = qi.get()#int(qi.get())
+				dirs = int(qi.get())
 				print dirs, "direction"
 				break
 		
 		loops += 1
 		# weird coding from the misterious original writer of this thing
-		"""gameinfo = nextstep(xs,ys,applepos,score,GameOver,dirs)
+		gameinfo = nextstep(xs,ys,applepos,score,GameOver,dirs)
 		xs = gameinfo[0]
 		ys = gameinfo[1]
 		applepos = gameinfo[2]
 		score = gameinfo[3]
-		GameOver = gameinfo[4] """
+		GameOver = gameinfo[4]
 
 		print 'iterating server'
-
-		"""
+		
 		# we send gui info to the client
 		guidict = dict()
 		guidict['xs'] = xs
@@ -119,7 +119,7 @@ def server(qi, ClientIP):
 
 ## Server master function listens for a time stamp, unpacks it waits delay 
 ## seconds after the timestamp and calls function funk
-def ServerConnectionHandler(ServerIP = '10.251.51.241', ServerPort = 5005, delay = 4):
+def ServerConnectionHandler(ServerIP = Server_IP, ServerPort = 5005, delay = 4):
 
 	TCP_IP = ServerIP
 	TCP_PORT = ServerPort
@@ -140,17 +140,13 @@ def ServerConnectionHandler(ServerIP = '10.251.51.241', ServerPort = 5005, delay
 	conn.close()
 
 	while (time.time() - delay)*1000 < startref[0]:	pass
-	print 'got here this time'
 	Qsi = Queue.Queue()
 
 	ServerReciever = threading.Thread(target = helpers.server_listener, args = (ServerIP, 4001, Qsi))
-	print 'wow now we here threading things'
 	Server = threading.Thread(target = server, args = (Qsi, Client_IP))
-	print 'some of the threating shoulda started mayb ips are wrong oops'
 
 	ServerReciever.start()
 	Server.start()
-	print 'shoulda started serving'
 	ServerReciever.join()
 	Server.join()
 

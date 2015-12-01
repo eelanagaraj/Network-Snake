@@ -18,6 +18,7 @@ from pygame.locals import *
 import helpers
 
 Client_IP = "192.168.89.131"
+Server_IP = "10.251.49.209"
 
 def client(qi, ServerIP):
 	sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -116,7 +117,7 @@ def client(qi, ServerIP):
 
 ## This Tcp wizardry sends timestamp to a server @ TCP_IP TCP_PORT waits delay seconds
 ## and then executes stuff, here this is print 5
-def ClientConnectionHandler(ServerIP = '10.251.49.209', ServerPort = 5005, delay = 4):
+def ClientConnectionHandler(ServerIP = Server_IP, ServerPort = 5005, delay = 4):
 
 	TCP_IP = ServerIP
 	TCP_PORT = ServerPort
@@ -127,6 +128,11 @@ def ClientConnectionHandler(ServerIP = '10.251.49.209', ServerPort = 5005, delay
 
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.connect((TCP_IP, TCP_PORT))
+
+	# so here can we send the init position/config also
+	# package it all up wiht reftime, etc., send as one tcp packet
+
+
 	s.send(reftime)
 	data = s.recv(BUFFER_SIZE)
 	s.close()
