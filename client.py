@@ -16,8 +16,8 @@ from pygame.locals import *
 
 import helpers
 
-Client_IP = "10.251.48.115"
-Server_IP = "10.251.59.41"
+Client_IP = "10.251.213.145"
+Server_IP = "10.251.218.96"
 Client_send_server_receive = 4000
 Server_send_client_receive = 4001
 
@@ -77,6 +77,7 @@ def client(qi, ServerIP):
 					dirs = 1
 
 	#	timer.start()
+		# below looks ugly, but slightly faster than pythonic list modification
 		pre1 = dirs_list[0]
 		pre2 = dirs_list[1]
 

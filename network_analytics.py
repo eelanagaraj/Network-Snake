@@ -38,9 +38,14 @@ def count_received (expected_volume, match_data, receive_IP, receive_port):
 	print "packets recceived :", packet_count
 	print "percent received :", packet_count/float(expected_volume)
 
+#TODO : artificially drop packets, introduce random latency and see if we can get around that (introduce the 40ms of LTE latency??)
+""" """
+
+
 receiver_IP = "10.251.48.115"
 
 packet = helpers.serializer(14, [1,0,3]) 
+#print len(packet)
 machine = int(raw_input("Sender machine press 0, receiver machine press 1"))
 if machine :
 	count_received(1000, packet, receiver_IP, 4001)

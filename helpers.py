@@ -104,23 +104,16 @@ def packet_handler(curr_seq_number, seq_number, payloads) :
 """ function that puts data, sequence, etc. in serialized string form 
 	payloads should be a list of moves, most recent --> least """	
 def serializer(seq_num, payloads) :
-	peanuts = {'seq_num': seq_num , 'payloads' : payloads}
-	# cPickle --> NOTE not robust against malicious attacks
-	#return pkl.dumps(peanuts)
-	# uJSON --> fast, C-backend, more robust to malicious attacks
+#	peanuts = {'seq_num': seq_num , 'payloads' : payloads}
+	peanuts = (seq_num, payloads)
 	return ujson.dumps(peanuts)
 
 
 """ un-serializes objects in the packet, returns (seq_num, payloads)"""
 def unserializer(UDP_data) :
-	# needs to be consistent with packer
-	# cPickle
-	#peanuts = pkl.loads(UDP_data)
-	#return (peanuts['seq_num'], peanuts['payloads'])
-	# ujson
-	peanuts = ujson.loads(UDP_data)
-	return (peanuts['seq_num'], peanuts['payloads'])
-
+	return ujson.loads(UDP_data)
+#	peanuts = ujson.loads(UDP_data)
+#	return (peanuts['seq_num'], peanuts['payloads'])
 
 
 """ listen on port UDP_PORTin, at ip UDP_IP for udp packets 
