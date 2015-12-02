@@ -152,7 +152,7 @@ def ClientConnectionHandler(ServerIP = Server_IP, ServerPort = 5005, delay = 4):
 
 	Qci = Queue.Queue()
 	
-	ClientReciever = threading.Thread(target = helpers.listener, args = (Client_IP,4000,QCi))
+	ClientReciever = threading.Thread(target = helpers.listener, args = (Client_IP,4000,Qci))
 	Client = threading.Thread(target = client, args = (Qci, ServerIP))
 	
 	ClientReciever.start()
