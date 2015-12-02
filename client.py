@@ -22,6 +22,8 @@ Server_IP = "10.251.59.41"
 
 def client(qi, ServerIP):
 	sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	timer = helpers.Timer()
+
 
 	rate = 0.31
 	## we start and customize the pygame gui
@@ -73,6 +75,7 @@ def client(qi, ServerIP):
 				elif e.key == K_RIGHT and dirs != 3:
 					dirs = 1
 
+		timer.start()
 		pre1 = dirs_list[0]
 		pre2 = dirs_list[1]
 
@@ -91,6 +94,10 @@ def client(qi, ServerIP):
 		# we wait and listen for incomming gui info in qi
 		while time.time() - sttime - loops*rate < (rate - 0.1):		
 			if qi.qsize() > 0:
+				timer.stop()
+				print(timer.elapsed)
+				timer.reset()
+				
 				# need to unserialize packet
 				seq_number,data = helper.unserializer(qi.get())
 
