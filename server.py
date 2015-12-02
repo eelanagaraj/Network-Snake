@@ -18,6 +18,8 @@ import helpers
 
 Client_IP = "10.251.48.115"
 Server_IP = "10.251.59.41"
+Client_send_server_receive = 4000
+Server_send_client_receive = 4001
 
 def server(qi, ClientIP):
 	# function to detect collisions serpent->serpent & serpent->apple
@@ -66,7 +68,7 @@ def server(qi, ClientIP):
 
 	sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	
-	rate = 0.051
+	rate = 0.31
 	# initial snake block positions
 	xs = [290, 290, 290, 290, 290]
 	ys = [290, 270, 250, 230, 210]
@@ -105,11 +107,11 @@ def server(qi, ClientIP):
 		guidict['score'] = score
 		guidict['GameOver'] = GameOver
 		packet = helpers.serializer(loops, guidict) 
-		sender.sendto(packet, (ClientIP, 4001))
+		sender.sendto(packet, (ClientIP, Server_send_client_receive))
 #		time.sleep(0.005)
-		sender.sendto(packet, (ClientIP, 4001))
+		sender.sendto(packet, (ClientIP, Server_send_client_receive))
 #		time.sleep(0.005)
-		sender.sendto(packet, (ClientIP, 4001))
+		sender.sendto(packet, (ClientIP, Server_send_client_receive))
 
 		if GameOver:
 			print 'darn'
@@ -141,7 +143,7 @@ def ServerConnectionHandler(ServerIP = Server_IP, ServerPort = 5005, delay = 2):
 	while (time.time() - delay)*1000 < startref[0]:	pass
 	Qsi = Queue.Queue()
 
-	ServerReciever = threading.Thread(target = helpers.server_listener, args = (ServerIP, 4000, Qsi))
+	ServerReciever = threading.Thread(target = helpers.server_listener, args = (ServerIP, Client_send_server_receive, Qsi))
 	Server = threading.Thread(target = server, args = (Qsi, Client_IP))
 
 	ServerReciever.start()

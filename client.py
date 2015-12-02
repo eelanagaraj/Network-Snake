@@ -17,11 +17,11 @@ from pygame.locals import *
 
 import helpers
 
-Client_IP = "10.251.48.115"
-Server_IP = "10.251.59.41"
 
 def client(qi, ServerIP):
 	sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	timer = helpers.Timer()
+
 
 	rate = 0.31
 	## we start and customize the pygame gui
@@ -73,6 +73,7 @@ def client(qi, ServerIP):
 				elif e.key == K_RIGHT and dirs != 3:
 					dirs = 1
 
+		timer.start()
 		pre1 = dirs_list[0]
 		pre2 = dirs_list[1]
 
@@ -82,15 +83,19 @@ def client(qi, ServerIP):
 
   		# send packet multiple times for redundancy, sleeps reduce packet loss
 		packet = helpers.serializer(loops, dirs_list) 
-		sender.sendto(packet, (ServerIP, 4001))
+		sender.sendto(packet, (ServerIP, Client_send_server_receive))
 #		time.sleep(0.005)
-		sender.sendto(packet, (ServerIP, 4001))
+		sender.sendto(packet, (ServerIP, Client_send_server_receive))
 #		time.sleep(0.005)
-		sender.sendto(packet, (ServerIP, 4001))
+		sender.sendto(packet, (ServerIP, Client_send_server_receive))
 
 		# we wait and listen for incomming gui info in qi
 		while time.time() - sttime - loops*rate < (rate - 0.1):		
 			if qi.qsize() > 0:
+				timer.stop()
+				print(timer.elapsed)
+				timer.reset()
+				
 				# need to unserialize packet
 				seq_number,data = helper.unserializer(qi.get())
 
@@ -152,7 +157,7 @@ def ClientConnectionHandler(ServerIP = Server_IP, ServerPort = 5005, delay = 2):
 
 	Qci = Queue.Queue()
 	
-	ClientReciever = threading.Thread(target = helpers.listener, args = (Client_IP,4000,Qci))
+	ClientReciever = threading.Thread(target = helpers.listener, args = (Client_IP,Server_send_client_receive,Qci))
 	Client = threading.Thread(target = client, args = (Qci, ServerIP))
 	
 	ClientReciever.start()
