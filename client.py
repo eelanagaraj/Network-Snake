@@ -17,14 +17,14 @@ from pygame.locals import *
 
 import helpers
 
-Client_IP = "192.168.89.131"
+Client_IP = "10.251.48.115"
 Server_IP = "10.251.59.41"
 Client_send_server_receive = 4000
 Server_send_client_receive = 4001
 
 def client(qi, ServerIP):
 	sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-	timer = helpers.Stopwatch()
+	#timer = helpers.Stopwatch()
 
 
 	rate = 0.31
@@ -77,7 +77,7 @@ def client(qi, ServerIP):
 				elif e.key == K_RIGHT and dirs != 3:
 					dirs = 1
 
-		timer.start()
+	#	timer.start()
 		pre1 = dirs_list[0]
 		pre2 = dirs_list[1]
 
@@ -97,11 +97,11 @@ def client(qi, ServerIP):
 		while time.time() - sttime - loops*rate < (rate - 0.1):		
 			if qi.qsize() > 0:
 
-				timer.stop()
-				print(timer.time_elapsed)
+				#timer.stop()
+				#print(timer.time_elapsed)
 				
 				# need to unserialize packet
-				seq_number,data = helper.unserializer(qi.get())
+				seq_number,data = helpers.unserializer(qi.get())
 
 				# need to handle configuration sequence orderings here
 				# should it just be < ??
