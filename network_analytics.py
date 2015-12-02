@@ -19,9 +19,7 @@ def count_received (expected_volume, match_data, receive_IP, receive_port):
 	receiver = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	receiver.bind((receive_IP, receive_port))
 	packet_count = 0
-	timeout = time.time() + 5
-	print timeout
-	while (packet_count < expected_volume and time.time() < timeout) :
+	while (packet_count < expected_volume) :
 		try : 
 			data, addr = receiver.recvfrom(512)
 			if data == match_data :
