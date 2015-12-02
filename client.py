@@ -17,13 +17,13 @@ from pygame.locals import *
 
 import helpers
 
-Client_IP = "192.168.89.131"
-Server_IP = "10.251.49.209"
+Client_IP = "10.251.48.115"
+Server_IP = "10.251.59.41"
 
 def client(qi, ServerIP):
 	sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-	rate = 0.51
+	rate = 0.31
 	## we start and customize the pygame gui
 	pygame.init();
 	s=pygame.display.set_mode((600, 600));
@@ -51,6 +51,7 @@ def client(qi, ServerIP):
 	f = pygame.font.SysFont('Arial', 20);
 
 	loops = 0
+	curr_gui_number = 0
 	dirs_list = [-1,-1,-1]
 	pre1 = -1
 	pre2 = -1
@@ -79,9 +80,12 @@ def client(qi, ServerIP):
 		dirs_list[1] = pre1
 		dirs_list[2] = pre2
 
-  		# send packet multiple times for redundancy
+  		# send packet multiple times for redundancy, sleeps reduce packet loss
 		packet = helpers.serializer(loops, dirs_list) 
 		sender.sendto(packet, (ServerIP, 4001))
+		time.sleep(0.005)
+		sender.sendto(packet, (ServerIP, 4001))
+		time.sleep(0.005)
 		sender.sendto(packet, (ServerIP, 4001))
 
 		# we wait and listen for incomming gui info in qi
@@ -89,16 +93,21 @@ def client(qi, ServerIP):
 			if qi.qsize() > 0:
 				# need to unserialize packet
 				seq_number,data = helper.unserializer(qi.get())
-				guidict = ast.literal_eval(data)
-				with qi.mutex:
-					qi.queue.clear()
-				if guidict['GameOver'] == True:
-					sys.exit()
-				xs = guidict['xs']
-				ys = guidict['ys']  
-				applepos = guidict['applepos']
-				score = guidict['score']
-				break
+
+				# need to handle configuration sequence orderings here
+				# should it just be < ??
+				if (curr_gui_number <= seq_number) :
+					curr_gui_number = seq_number
+					guidict = ast.literal_eval(data)
+					with qi.mutex:
+						qi.queue.clear()
+					if guidict['GameOver'] == True:
+						sys.exit()
+					xs = guidict['xs']
+					ys = guidict['ys']  
+					applepos = guidict['applepos']
+					score = guidict['score']
+					break
 
 		##rendering when gui info received
 		s.fill((255, 255, 255))

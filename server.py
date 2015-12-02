@@ -16,8 +16,8 @@ import threading
 
 import helpers
 
-Client_IP = "192.168.89.131"
-Server_IP = "10.251.49.209"
+Client_IP = "10.251.48.115"
+Server_IP = "10.251.59.41"
 
 def server(qi, ClientIP):
 	# function to detect collisions serpent->serpent & serpent->apple
@@ -66,7 +66,7 @@ def server(qi, ClientIP):
 
 	sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	
-	rate = 0.51
+	rate = 0.21
 	# initial snake block positions
 	xs = [290, 290, 290, 290, 290]
 	ys = [290, 270, 250, 230, 210]
@@ -86,19 +86,17 @@ def server(qi, ClientIP):
 		while time.time() - sttime - loops*rate < (rate - 0.1):
 			if qi.qsize() > 0:
 				dirs = int(qi.get())
-				print dirs, "direction"
+			#	print dirs, "direction"
 				break
-		
+
+		# here loops represents the config number we are sending back
 		loops += 1
-		# weird coding from the misterious original writer of this thing
 		gameinfo = nextstep(xs,ys,applepos,score,GameOver,dirs)
 		xs = gameinfo[0]
 		ys = gameinfo[1]
 		applepos = gameinfo[2]
 		score = gameinfo[3]
 		GameOver = gameinfo[4]
-
-		print 'iterating server'
 		
 		# we send gui info to the client
 		guidict = dict()
@@ -107,10 +105,12 @@ def server(qi, ClientIP):
 		guidict['applepos'] = applepos
 		guidict['score'] = score
 		guidict['GameOver'] = GameOver
-
 		packet = helpers.serializer(loops, guidict) 
 		sender.sendto(packet, (ClientIP, 4001))
-		#sender.sendto(packet, (ClientIP, 4001))
+		time.sleep(0.005)
+		sender.sendto(packet, (ClientIP, 4001))
+		time.sleep(0.005)
+		sender.sendto(packet, (ClientIP, 4001))
 
 		if GameOver:
 			print 'darn'
@@ -142,7 +142,7 @@ def ServerConnectionHandler(ServerIP = Server_IP, ServerPort = 5005, delay = 4):
 	while (time.time() - delay)*1000 < startref[0]:	pass
 	Qsi = Queue.Queue()
 
-	ServerReciever = threading.Thread(target = helpers.server_listener, args = (ServerIP, 4001, Qsi))
+	ServerReciever = threading.Thread(target = helpers.server_listener, args = (ServerIP, 4000, Qsi))
 	Server = threading.Thread(target = server, args = (Qsi, Client_IP))
 
 	ServerReciever.start()
