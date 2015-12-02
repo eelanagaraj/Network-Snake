@@ -13,7 +13,9 @@ import time
 def send_packets (volume, packet, receive_IP, port_num) :
 	sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	for i in xrange(volume) :
-		sender.sendto(packet, (receive_IP, port_num))
+		gift = helpers.serializer(i, [1,3,5])
+		sender.sendto(gift, (receive_IP, port_num))
+		print "sent ", i
 
 def count_received (expected_volume, match_data, receive_IP, receive_port):
 	receiver = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -22,9 +24,10 @@ def count_received (expected_volume, match_data, receive_IP, receive_port):
 	while (packet_count < expected_volume) :
 		try : 
 			data, addr = receiver.recvfrom(512)
-			if data == match_data :
-				packet_count += 1
-				print packet_count
+			seq_num, moves = helpers.unserializer(data)
+			#if data == match_data :
+			packet_count += 1
+			print 'count: ', packet_count, 'seq_num: ', seq_num
 		except KeyboardInterrupt :
 			print "packets received :", packet_count
 			print "percent received :", packet_count/float(expected_volume)
