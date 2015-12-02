@@ -12,7 +12,7 @@ import ujson
 
 """ Eela IP 10.251.51.241
 	Matt IP 192.168.89.131
-	Sean IP
+	Sean IP 10.251.48.115
 """
 
 """ -assume data is of form: data = (seq_number, data_payload, prev_payloads)
@@ -40,20 +40,20 @@ def packet_handler(curr_seq_number, seq_number, payloads) :
 def serializer(seq_num, payloads) :
 	peanuts = {'seq_num': seq_num , 'payloads' : payloads}
 	# cPickle --> NOTE not robust against malicious attacks
-	return pkl.dumps(peanuts)
+	#return pkl.dumps(peanuts)
 	# uJSON --> fast, C-backend, more robust to malicious attacks
-	#return ujson.dumps(peanuts)
+	return ujson.dumps(peanuts)
 
 
 """ un-serializes objects in the packet, returns (seq_num, payloads)"""
 def unserializer(UDP_data) :
 	# needs to be consistent with packer
 	# cPickle
-	peanuts = pkl.loads(UDP_data)
-	return (peanuts['seq_num'], peanuts['payloads'])
+	#peanuts = pkl.loads(UDP_data)
+	#return (peanuts['seq_num'], peanuts['payloads'])
 	# ujson
-	# peanuts = ujson.loads(UDP_packet)
-	# return (peanuts['seq_num'], peanuts['payloads'])
+	peanuts = ujson.loads(UDP_packet)
+	return (peanuts['seq_num'], peanuts['payloads'])
 
 
 
@@ -82,7 +82,6 @@ def server_listener(UDP_IP, UDP_PORTin, q,):
 		data, addr = receiver.recvfrom(512) # buffer size is 1024 bytes
 		seq_num, payloads = unserializer(data)
 		(curr_seq, moves) = packet_handler(curr_seq, seq_num, payloads)
-
 		# put moves on listening queue, oldest --> newest
 		for move in reversed(moves) :
 			q.put(move)

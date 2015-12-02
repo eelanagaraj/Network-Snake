@@ -23,7 +23,7 @@ Server_IP = "10.251.59.41"
 def client(qi, ServerIP):
 	sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-	rate = 0.51
+	rate = 0.31
 	## we start and customize the pygame gui
 	pygame.init();
 	s=pygame.display.set_mode((600, 600));
