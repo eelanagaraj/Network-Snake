@@ -66,7 +66,7 @@ def server(qi, ClientIP):
 
 	sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	
-	rate = 0.21
+	rate = 0.051
 	# initial snake block positions
 	xs = [290, 290, 290, 290, 290]
 	ys = [290, 270, 250, 230, 210]
@@ -83,10 +83,9 @@ def server(qi, ClientIP):
 	loops = 0
 	while True:		
 		# if we have a command in our queue
-		while time.time() - sttime - loops*rate < (rate - 0.1):
+		while time.time() - sttime - loops*rate < (rate - 0.05):
 			if qi.qsize() > 0:
 				dirs = int(qi.get())
-			#	print dirs, "direction"
 				break
 
 		# here loops represents the config number we are sending back
@@ -107,9 +106,9 @@ def server(qi, ClientIP):
 		guidict['GameOver'] = GameOver
 		packet = helpers.serializer(loops, guidict) 
 		sender.sendto(packet, (ClientIP, 4001))
-		time.sleep(0.005)
+#		time.sleep(0.005)
 		sender.sendto(packet, (ClientIP, 4001))
-		time.sleep(0.005)
+#		time.sleep(0.005)
 		sender.sendto(packet, (ClientIP, 4001))
 
 		if GameOver:
@@ -119,7 +118,7 @@ def server(qi, ClientIP):
 
 ## Server master function listens for a time stamp, unpacks it waits delay 
 ## seconds after the timestamp and calls function funk
-def ServerConnectionHandler(ServerIP = Server_IP, ServerPort = 5005, delay = 4):
+def ServerConnectionHandler(ServerIP = Server_IP, ServerPort = 5005, delay = 2):
 
 	TCP_IP = ServerIP
 	TCP_PORT = ServerPort

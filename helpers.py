@@ -52,7 +52,7 @@ def unserializer(UDP_data) :
 	#peanuts = pkl.loads(UDP_data)
 	#return (peanuts['seq_num'], peanuts['payloads'])
 	# ujson
-	peanuts = ujson.loads(UDP_packet)
+	peanuts = ujson.loads(UDP_data)
 	return (peanuts['seq_num'], peanuts['payloads'])
 
 
