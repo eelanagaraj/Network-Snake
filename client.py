@@ -17,7 +17,7 @@ from pygame.locals import *
 
 import helpers
 
-Client_IP = "192.168.89.131"
+Client_IP = "10.251.48.115"
 Server_IP = "10.251.59.41"
 
 def client(qi, ServerIP):
