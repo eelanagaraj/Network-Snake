@@ -5,7 +5,6 @@
 		receives graphical rendering as UDP packets from server,
 		renders graphics for user"""
 
-import ast
 import pygame
 import Queue
 import random, sys
@@ -107,7 +106,7 @@ def client(qi, ServerIP):
 				# should it just be < ??
 				if (curr_gui_number <= seq_number) :
 					curr_gui_number = seq_number
-					guidict = ast.literal_eval(data)
+					guidict = data
 					with qi.mutex:
 						qi.queue.clear()
 					if guidict['GameOver'] == True:

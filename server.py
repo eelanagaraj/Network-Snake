@@ -4,7 +4,6 @@
 		perform game computations on these inputs,
 		return entire graphical representation to client"""
 
-import ast
 #import pygame
 import Queue
 import random, sys
