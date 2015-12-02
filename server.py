@@ -73,8 +73,8 @@ def server(qi, ClientIP):
 	ys = [290, 270, 250, 230, 210]
 		
 	# initial snake direction, score & position of the apple
-	dirs = 0
-	score = 0
+	dirs = 0;
+	score = 0;
 
 	#
 	GameOver = False

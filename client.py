@@ -55,15 +55,15 @@ def client(qi, ServerIP):
 
 	loops = 0
 	curr_gui_number = 0
+#	round_trip = 0
 	dirs_list = [-1,-1,-1]
 	pre1 = -1
 	pre2 = -1
 	sttime = time.time()
 	while True:
-		print 'iterating client'
-
 		# we detect keystrokes and put them in our queue qo
 		for e in pygame.event.get():
+#			start_time = time.time()
 			if e.type == QUIT:
 				sys.exit(0)
 			elif e.type == KEYDOWN:
