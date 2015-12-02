@@ -16,7 +16,7 @@ import threading
 
 import helpers
 
-Client_IP = "10.251.48.115"
+Client_IP = "192.168.89.131"
 Server_IP = "10.251.59.41"
 Client_send_server_receive = 4000
 Server_send_client_receive = 4001
