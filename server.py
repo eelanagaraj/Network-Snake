@@ -16,8 +16,8 @@ import threading
 
 import helpers
 
-Client_IP = "192.168.89.131"
-Server_IP = "10.251.49.209"
+Client_IP = "10.251.48.115"
+Server_IP = "10.251.59.41"
 
 def server(qi, ClientIP):
 	# function to detect collisions serpent->serpent & serpent->apple
@@ -91,7 +91,6 @@ def server(qi, ClientIP):
 
 		# here loops represents the config number we are sending back
 		loops += 1
-		# weird coding from the misterious original writer of this thing
 		gameinfo = nextstep(xs,ys,applepos,score,GameOver,dirs)
 		xs = gameinfo[0]
 		ys = gameinfo[1]
@@ -110,6 +109,7 @@ def server(qi, ClientIP):
 		guidict['GameOver'] = GameOver
 
 		packet = helpers.serializer(loops, guidict) 
+		sender.sendto(packet, (ClientIP, 4001))
 		sender.sendto(packet, (ClientIP, 4001))
 		sender.sendto(packet, (ClientIP, 4001))
 
