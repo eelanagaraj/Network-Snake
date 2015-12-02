@@ -7,7 +7,7 @@ import Queue
 import threading
 import time
 import cPickle as pkl
-#import ujson
+import ujson
 
 
 """ Eela IP 10.251.51.241
@@ -48,6 +48,27 @@ class Stopwatch(object):
 
 	def __enter__(self):
         """Start timing and return this `Stopwatch` instance."""
+	self.start()
+        return self
+
+	def __exit__(self, type, value, traceback):
+        """Stop timing.
+        If there was an exception inside the `with` block, re-raise it.
+        >>> with Stopwatch() as stopwatch:
+        ...     raise Exception
+        Traceback (most recent call last):
+            ...
+        Exception
+        """
+        self.stop()
+        if type:
+            raise type, value, traceback
+
+Client_IP = "10.251.48.115"
+Server_IP = "10.251.59.41"
+Client_send_server_receive = 4000
+Server_send_client_receive = 4001
+
         self.start()
         return self
 
@@ -64,7 +85,7 @@ class Stopwatch(object):
         if type:
             raise type, value, traceback
 
-
+"""
 
 """ -assume data is of form: data = (seq_number, data_payload, prev_payloads)
 	-payloads is a list of all data payloads that are included, 
@@ -103,7 +124,7 @@ def unserializer(UDP_data) :
 	#peanuts = pkl.loads(UDP_data)
 	#return (peanuts['seq_num'], peanuts['payloads'])
 	# ujson
-	peanuts = ujson.loads(UDP_packet)
+	peanuts = ujson.loads(UDP_data)
 	return (peanuts['seq_num'], peanuts['payloads'])
 
 

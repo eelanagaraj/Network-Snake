@@ -17,8 +17,6 @@ from pygame.locals import *
 
 import helpers
 
-Client_IP = "10.251.48.115"
-Server_IP = "10.251.59.41"
 
 def client(qi, ServerIP):
 	sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -85,11 +83,11 @@ def client(qi, ServerIP):
 
   		# send packet multiple times for redundancy, sleeps reduce packet loss
 		packet = helpers.serializer(loops, dirs_list) 
-		sender.sendto(packet, (ServerIP, 4001))
-		time.sleep(0.005)
-		sender.sendto(packet, (ServerIP, 4001))
-		time.sleep(0.005)
-		sender.sendto(packet, (ServerIP, 4001))
+		sender.sendto(packet, (ServerIP, Client_send_server_receive))
+#		time.sleep(0.005)
+		sender.sendto(packet, (ServerIP, Client_send_server_receive))
+#		time.sleep(0.005)
+		sender.sendto(packet, (ServerIP, Client_send_server_receive))
 
 		# we wait and listen for incomming gui info in qi
 		while time.time() - sttime - loops*rate < (rate - 0.1):		
@@ -133,7 +131,7 @@ def client(qi, ServerIP):
 
 ## This Tcp wizardry sends timestamp to a server @ TCP_IP TCP_PORT waits delay seconds
 ## and then executes stuff, here this is print 5
-def ClientConnectionHandler(ServerIP = Server_IP, ServerPort = 5005, delay = 4):
+def ClientConnectionHandler(ServerIP = Server_IP, ServerPort = 5005, delay = 2):
 
 	TCP_IP = ServerIP
 	TCP_PORT = ServerPort
@@ -159,7 +157,7 @@ def ClientConnectionHandler(ServerIP = Server_IP, ServerPort = 5005, delay = 4):
 
 	Qci = Queue.Queue()
 	
-	ClientReciever = threading.Thread(target = helpers.listener, args = (Client_IP,4000,Qci))
+	ClientReciever = threading.Thread(target = helpers.listener, args = (Client_IP,Server_send_client_receive,Qci))
 	Client = threading.Thread(target = client, args = (Qci, ServerIP))
 	
 	ClientReciever.start()
