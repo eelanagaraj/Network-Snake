@@ -22,7 +22,7 @@ Server_IP = "10.251.59.41"
 
 def client(qi, ServerIP):
 	sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-	timer = helpers.Timer()
+	timer = helpers.Stopwatch()
 
 
 	rate = 0.31
@@ -94,9 +94,9 @@ def client(qi, ServerIP):
 		# we wait and listen for incomming gui info in qi
 		while time.time() - sttime - loops*rate < (rate - 0.1):		
 			if qi.qsize() > 0:
+
 				timer.stop()
-				print(timer.elapsed)
-				timer.reset()
+				print(timer.time_elapsed)
 				
 				# need to unserialize packet
 				seq_number,data = helper.unserializer(qi.get())
