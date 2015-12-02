@@ -110,7 +110,9 @@ def server(qi, ClientIP):
 
 		packet = helpers.serializer(loops, guidict) 
 		sender.sendto(packet, (ClientIP, 4001))
+		time.sleep(0.005)
 		sender.sendto(packet, (ClientIP, 4001))
+		time.sleep(0.005)
 		sender.sendto(packet, (ClientIP, 4001))
 
 		if GameOver:

@@ -16,6 +16,7 @@ def send_packets (volume, packet, receive_IP, port_num) :
 		gift = helpers.serializer(i, [1,3,5])
 		sender.sendto(gift, (receive_IP, port_num))
 		print "sent ", i
+		time.sleep(0.005)
 
 def count_received (expected_volume, match_data, receive_IP, receive_port):
 	receiver = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

@@ -80,10 +80,12 @@ def client(qi, ServerIP):
 		dirs_list[1] = pre1
 		dirs_list[2] = pre2
 
-  		# send packet multiple times for redundancy
+  		# send packet multiple times for redundancy, sleeps reduce packet loss
 		packet = helpers.serializer(loops, dirs_list) 
 		sender.sendto(packet, (ServerIP, 4001))
+		time.sleep(0.005)
 		sender.sendto(packet, (ServerIP, 4001))
+		time.sleep(0.005)
 		sender.sendto(packet, (ServerIP, 4001))
 
 		# we wait and listen for incomming gui info in qi
