@@ -67,14 +67,15 @@ def server(qi, ClientIP):
 
 	sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 	
-	rate = 0.31
+	rate = 0.11
 	# initial snake block positions
 	xs = [290, 290, 290, 290, 290]
 	ys = [290, 270, 250, 230, 210]
 		
 	# initial snake direction, score & position of the apple
-	dirs = 0;
-	score = 0;
+	dirs = 0
+	score = 0
+
 	#
 	GameOver = False
 	#\/ modification to see the snake eat the first apple
@@ -84,7 +85,7 @@ def server(qi, ClientIP):
 	loops = 0
 	while True:		
 		# if we have a command in our queue
-		while time.time() - sttime - loops*rate < (rate - 0.05):
+		while time.time() - sttime - loops*rate < (rate - 0.1):
 			if qi.qsize() > 0:
 				dirs = int(qi.get())
 				break
@@ -123,7 +124,7 @@ def ServerConnectionHandler(ServerIP = Server_IP, ServerPort = 5005, delay = 2):
 
 	TCP_IP = ServerIP
 	TCP_PORT = ServerPort
-	BUFFER_SIZE = 20  # Normally 1024, but we want fast response
+	BUFFER_SIZE = 32  # Normally 1024, but we want fast response
 
 	packer = struct.Struct('d')
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)

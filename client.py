@@ -26,7 +26,7 @@ def client(qi, ServerIP):
 	#timer = helpers.Stopwatch()
 
 
-	rate = 0.31
+	rate = 0.11
 	## we start and customize the pygame gui
 	pygame.init();
 	s=pygame.display.set_mode((600, 600));
@@ -38,8 +38,8 @@ def client(qi, ServerIP):
 
 
 	# initial snake direction, score & position of the apple
-	dirs = 0;
-	score = 0;
+	dirs = 0
+	score = 0
 
 	# we create our apple and our snake blocks
 	block_size = (20, 20)
@@ -87,9 +87,7 @@ def client(qi, ServerIP):
   		# send packet multiple times for redundancy, sleeps reduce packet loss
 		packet = helpers.serializer(loops, dirs_list) 
 		sender.sendto(packet, (ServerIP, Client_send_server_receive))
-#		time.sleep(0.005)
 		sender.sendto(packet, (ServerIP, Client_send_server_receive))
-#		time.sleep(0.005)
 		sender.sendto(packet, (ServerIP, Client_send_server_receive))
 
 		# we wait and listen for incomming gui info in qi

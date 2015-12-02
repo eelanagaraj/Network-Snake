@@ -85,7 +85,7 @@ class Stopwatch(object):
 		in decr sequence order (e.g. [recent, ..., oldest])
 	-return tuple of: (new_current_seq, [most recent payload, ... oldest]) 
 	**** maybe reverse within this function itself???? see what works best """
-	
+
 def packet_handler(curr_seq_number, seq_number, payloads) :
 	# check if current sequence number matches the sent packet
 	if (curr_seq_number == seq_number) :
@@ -133,7 +133,7 @@ def listener(UDP_IP, UDP_PORTin, q,):
 	
 	# we listen for packets and send them to the game thread/ put them in the queue
 	while True:
-		data, addr = receiver.recvfrom(512) # buffer size is 1024 bytes
+		data, addr = receiver.recvfrom(1024) # buffer size is 1024 bytes
 		q.put(data)
 
 
@@ -145,7 +145,7 @@ def server_listener(UDP_IP, UDP_PORTin, q,):
 	
 	# we listen for packets, but only queue moves that are relevant
 	while True:
-		data, addr = receiver.recvfrom(512) # buffer size is 1024 bytes
+		data, addr = receiver.recvfrom(1024) # buffer size is 1024 bytes
 		seq_num, payloads = unserializer(data)
 		(curr_seq, moves) = packet_handler(curr_seq, seq_num, payloads)
 		# put moves on listening queue, oldest --> newest
