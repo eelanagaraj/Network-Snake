@@ -17,6 +17,17 @@ def send_packets (volume, packet, receive_IP, port_num) :
 		sender.sendto(gift, (receive_IP, port_num))
 		print "sent ", i
 		time.sleep(0.005)
+		
+def send_packetbursts(volume, packet, receive_IP, port_num) :
+	sender = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+	for i in range(1,volume,3):
+		for j in range(1,4):
+			i += 1
+			gift = helpers.serializer(i, [1,3,5])
+			sender.sendto(gift, (receive_IP, port_num))
+			print "sent ", i
+		time.sleep(0.005)
+
 
 def count_received (expected_volume, match_data, receive_IP, receive_port):
 	receiver = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
